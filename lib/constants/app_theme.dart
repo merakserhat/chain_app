@@ -11,6 +11,7 @@ class AppColors {
   static const Color dark600 = Color(0xff28282a);
   static const Color dark500 = Color(0xff3d3d3d);
   static const Color dark400 = Color(0xff686868);
+  static const Color dark300 = Color(0xff989898);
 }
 
 class AppThemes {

@@ -1,11 +1,22 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/screens/home/widgets/header/chain_button.dart';
+import 'package:chain_app/screens/home/widgets/header/header_day.dart';
 import 'package:chain_app/screens/home/widgets/header/header_title.dart';
+import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 
 class HomeHeader extends StatefulWidget {
-  const HomeHeader({Key? key}) : super(key: key);
+  const HomeHeader(
+      {Key? key,
+      required this.panelDate,
+      required this.onDaySelected,
+      required this.weekList})
+      : super(key: key);
+
+  final DateTime panelDate;
+  final List<DateTime> weekList;
+  final Function(DateTime) onDaySelected;
 
   @override
   State<HomeHeader> createState() => _HomeHeaderState();
@@ -17,7 +28,7 @@ class _HomeHeaderState extends State<HomeHeader> {
   bool headerOpen = false;
 
   final double headerClosedHeight = 60;
-  final double headerOpenHeight = 100;
+  final double headerOpenHeight = 130;
   late double headerHeight;
 
   @override
@@ -77,9 +88,21 @@ class _HomeHeaderState extends State<HomeHeader> {
                   ],
                 ),
               ),
-              Container(
+              SizedBox(
                 width: double.infinity,
                 height: headerOpenHeight - headerClosedHeight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: widget.weekList
+                      .map(
+                        (date) => HeaderDay(
+                          onDaySelected: widget.onDaySelected,
+                          dateTime: date,
+                          panelDate: widget.panelDate,
+                        ),
+                      )
+                      .toList(),
+                ),
               )
             ],
           ),
