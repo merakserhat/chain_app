@@ -51,4 +51,11 @@ class DateUtil {
 
     return -1;
   }
+
+  static DateTime calculateCurrentDateTime(int weekIndex, int dayIndex) {
+    DateTime today = DateTime.now();
+    int incrementDay = dayIndex;
+    print(incrementDay);
+    return today.add(Duration(days: (7 * weekIndex) + incrementDay));
+  }
 }

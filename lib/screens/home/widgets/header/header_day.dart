@@ -30,12 +30,15 @@ class HeaderDay extends StatelessWidget {
                 .copyWith(color: AppColors.dark300),
           ),
           const SizedBox(height: 4),
-          Container(
+          AnimatedContainer(
+            duration: Duration(milliseconds: 200),
             width: 30,
             height: 30,
             decoration: BoxDecoration(
               color: DateUtil.isToday(dateTime, panelDate)
-                  ? AppColors.white
+                  ? DateUtil.isToday(dateTime, DateTime.now())
+                      ? AppColors.primary
+                      : AppColors.white
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(100),
             ),
@@ -44,8 +47,12 @@ class HeaderDay extends StatelessWidget {
                 DateUtil.getMonthDay(dateTime),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: DateUtil.isToday(dateTime, panelDate)
-                          ? AppColors.dark700
-                          : AppColors.white,
+                          ? DateUtil.isToday(dateTime, DateTime.now())
+                              ? Colors.white
+                              : AppColors.dark700
+                          : DateUtil.isToday(dateTime, DateTime.now())
+                              ? AppColors.primary
+                              : AppColors.white,
                     ),
               ),
             ),

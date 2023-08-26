@@ -13,25 +13,46 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late DateTime panelDate;
+  int weekIndex = 0;
   late final PageController _controller;
-  late List<DateTime> dates;
   bool isAnimatingPage = false;
+  final int initialDayIndex = 999;
+  Duration animationDuration = Duration(milliseconds: 400);
 
   @override
   void initState() {
     super.initState();
     panelDate = DateTime.now();
     _controller = PageController(
-      initialPage: DateTime.now().weekday - 1,
+      initialPage: initialDayIndex,
     );
-    dates = DateUtil.getWeekDates(panelDate);
+  }
+
+  void onWeekChanged(int weekIndex) {
+    Future.delayed(animationDuration, () {
+      setState(() {
+        isAnimatingPage = false;
+      });
+    });
+    setState(() {
+      this.weekIndex = weekIndex;
+      isAnimatingPage = true;
+      panelDate = DateTime.now().add(Duration(days: weekIndex * 7));
+      _controller.animateToPage(
+        initialDayIndex +
+            (7 * weekIndex) +
+            (panelDate.weekday - DateTime.now().weekday),
+        duration: animationDuration,
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   void onDaySelected(DateTime dateTime) {
+    print("object");
     if (DateUtil.isToday(dateTime, panelDate)) {
       return;
     }
-    Duration animationDuration = Duration(milliseconds: 400);
     setState(() {
       panelDate = dateTime;
       isAnimatingPage = true;
@@ -41,9 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
         isAnimatingPage = false;
       });
     });
-    int pageIndex = DateUtil.indexInList(dateTime, dates);
     _controller.animateToPage(
-      pageIndex,
+      initialDayIndex +
+          (7 * weekIndex) +
+          (dateTime.weekday - DateTime.now().weekday),
       duration: animationDuration,
       curve: Curves.easeInOut,
     );
@@ -56,25 +78,24 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           HomeHeader(
-            weekList: DateUtil.getWeekDates(panelDate),
             panelDate: panelDate,
             onDaySelected: onDaySelected,
+            onWeekChanged: onWeekChanged,
           ),
           Expanded(
-            child: PageView(
+            child: PageView.builder(
               controller: _controller,
               onPageChanged: (index) {
                 if (isAnimatingPage) {
                   return;
                 }
-                if (DateUtil.inInPanelWeek(
-                    dates[index], DateUtil.getWeekDates(panelDate))) {
-                  setState(() {
-                    panelDate = dates[index];
-                  });
-                }
+                print(index);
+                setState(() {
+                  panelDate = DateUtil.calculateCurrentDateTime(
+                      weekIndex, index - initialDayIndex);
+                });
               },
-              children: dates.map((index) => TimePanel()).toList(),
+              itemBuilder: (context, index) => TimePanel(),
             ),
           ),
         ],

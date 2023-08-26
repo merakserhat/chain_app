@@ -11,12 +11,12 @@ class HomeHeader extends StatefulWidget {
       {Key? key,
       required this.panelDate,
       required this.onDaySelected,
-      required this.weekList})
+      required this.onWeekChanged})
       : super(key: key);
 
   final DateTime panelDate;
-  final List<DateTime> weekList;
   final Function(DateTime) onDaySelected;
+  final Function(int) onWeekChanged;
 
   @override
   State<HomeHeader> createState() => _HomeHeaderState();
@@ -24,6 +24,7 @@ class HomeHeader extends StatefulWidget {
 
 class _HomeHeaderState extends State<HomeHeader> {
   final Duration openAnimationDuration = Duration(milliseconds: 200);
+  late final PageController _controller;
 
   bool headerOpen = false;
 
@@ -31,9 +32,13 @@ class _HomeHeaderState extends State<HomeHeader> {
   final double headerOpenHeight = 130;
   late double headerHeight;
 
+  final int initialPage = 999;
   @override
   void initState() {
     super.initState();
+    _controller = PageController(
+      initialPage: initialPage,
+    );
     headerHeight = headerClosedHeight;
   }
 
@@ -69,7 +74,10 @@ class _HomeHeaderState extends State<HomeHeader> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     HeaderTitle(
-                        isOpen: headerOpen, onClicked: handleHeaderClicked),
+                      isOpen: headerOpen,
+                      onClicked: handleHeaderClicked,
+                      panelDate: widget.panelDate,
+                    ),
                     Row(
                       children: [
                         ChainButton(onPressed: () {}),
@@ -91,17 +99,24 @@ class _HomeHeaderState extends State<HomeHeader> {
               SizedBox(
                 width: double.infinity,
                 height: headerOpenHeight - headerClosedHeight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: widget.weekList
-                      .map(
-                        (date) => HeaderDay(
-                          onDaySelected: widget.onDaySelected,
-                          dateTime: date,
-                          panelDate: widget.panelDate,
-                        ),
-                      )
-                      .toList(),
+                child: PageView.builder(
+                  controller: _controller,
+                  onPageChanged: (index) {
+                    widget.onWeekChanged(index - initialPage);
+                  },
+                  itemBuilder: (context, index) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: DateUtil.getWeekDates(DateTime.now()
+                            .add(Duration(days: (index - initialPage) * 7)))
+                        .map(
+                          (date) => HeaderDay(
+                            onDaySelected: widget.onDaySelected,
+                            dateTime: date,
+                            panelDate: widget.panelDate,
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
               )
             ],
