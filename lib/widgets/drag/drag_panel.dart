@@ -27,6 +27,7 @@ class DragPanel extends StatefulWidget {
 
 class _DragPanelState extends State<DragPanel> {
   late List<DragModel<int>> _dragModels;
+  final List<Offset> overlaps = [];
 
   double newDraggableStartPos = 0;
   double newDraggableEndPos = 0;
@@ -122,9 +123,12 @@ class _DragPanelState extends State<DragPanel> {
     double topDiffHeight = 0;
 
     for (DragModel otherModel in _dragModels
-        .where((element) => element.y < mainItem.y)
+        .where((element) => element.y <= mainItem.y)
         .toList()
         .reversed) {
+      if (otherModel == mainItem) {
+        continue;
+      }
       if (mainItem.y - otherModel.y < otherModel.height + bottomDiffHeight) {
         otherModel.y = mainItem.y - otherModel.height - bottomDiffHeight;
         bottomDiffHeight += otherModel.height;
@@ -147,7 +151,31 @@ class _DragPanelState extends State<DragPanel> {
         }
       }
     }
+    checkOverlaps();
     setState(() {});
+  }
+
+  void checkOverlaps() {
+    overlaps.clear();
+    for (int i = 0; i < _dragModels.length; i++) {
+      for (int j = i + 1; j < _dragModels.length; j++) {
+        DragModel model1 = _dragModels[i];
+        DragModel model2 = _dragModels[j];
+
+        double minY = model1.y > model2.y ? model1.y : model2.y;
+        double maxY = (model1.y + model1.height) < (model2.y + model2.height)
+            ? (model1.y + model1.height)
+            : (model2.y + model2.height);
+
+        if (maxY > minY) {
+          double overlappingY = minY;
+          double overlappingHeight = maxY - minY;
+
+          if (overlappingHeight < 5) continue;
+          overlaps.add(Offset(overlappingHeight, overlappingY));
+        }
+      }
+    }
   }
 
   @override
@@ -187,7 +215,22 @@ class _DragPanelState extends State<DragPanel> {
                         resizeHeight: max(5, dragModel.height * 0.25),
                       ),
                     ),
-                  getNewDraggablePreview()
+                  getNewDraggablePreview(),
+                  for (var overlap in overlaps)
+                    Positioned(
+                        top: overlap.dy - 12 + overlap.dx / 2,
+                        left: 20,
+                        child: Center(
+                          child: SizedBox(
+                              width: 50,
+                              height: 24,
+                              child: Center(
+                                child: Image.asset(
+                                  "assets/images/warning.png",
+                                  color: AppColors.secondary,
+                                ),
+                              )),
+                        ))
                 ],
               ),
             ),
