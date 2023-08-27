@@ -1,4 +1,5 @@
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/utils/date_util.dart';
 import 'package:flutter/material.dart';
 
 class TimerTexts extends StatelessWidget {
@@ -40,7 +41,7 @@ class TimerTexts extends StatelessWidget {
             return Expanded(
                 child: Center(
               child: Text(
-                getDurationText(timerDuration),
+                DateUtil.getDurationText(timerDuration),
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColors.dark400,
@@ -72,9 +73,5 @@ class TimerTexts extends StatelessWidget {
 
   int get timeCount {
     return (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
-  }
-
-  String getDurationText(Duration duration) {
-    return "${duration.inHours.toString().padLeft(2, "0")}:${(duration.inMinutes % 60).toString().padLeft(2, "0")}";
   }
 }

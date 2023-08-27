@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:flutter/material.dart';
 
 import 'drag_model.dart';
@@ -45,17 +46,22 @@ class _DragItemState extends State<DragItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTapDown: (details) {
-          lastTappedY = details.localPosition.dy;
-          lastTappedHeight = widget.dragModel.height;
-        },
-        onVerticalDragUpdate: (details) {
-          _informDragMovement(details.delta.dy, true);
-        },
-        onVerticalDragEnd: (details) {
-          _informDragMovement(0, false);
-        },
-        child: _getRoundBoxShape());
+      onTapDown: (details) {
+        lastTappedY = details.localPosition.dy;
+        lastTappedHeight = widget.dragModel.height;
+      },
+      onVerticalDragUpdate: (details) {
+        _informDragMovement(details.delta.dy, true);
+      },
+      onVerticalDragEnd: (details) {
+        _informDragMovement(0, false);
+      },
+      child: DragItemShape(
+          isPartial: widget.isPartial,
+          height: widget.dragModel.height,
+          dragItemWidth: widget.dragItemWidth,
+          color: widget.dragModel.color),
+    );
   }
 
   void _informDragMovement(double dy, bool continues) {
@@ -74,55 +80,5 @@ class _DragItemState extends State<DragItem> {
     } else {
       widget.onDrag(draggingInfo);
     }
-  }
-
-  Widget _getRoundBoxShape() {
-    if (widget.isPartial) {
-      return Container(
-        height: widget.dragModel.height,
-        width: widget.dragItemWidth,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: widget.dragModel.color),
-      );
-    }
-
-    double centerBoxHeight = widget.dragModel.height - widget.dragItemWidth;
-    double centerBoxY = widget.dragModel.height / 2 - centerBoxHeight / 2;
-    return SizedBox(
-      width: widget.dragItemWidth,
-      height: widget.dragModel.height,
-      child: Stack(
-        children: [
-          Container(
-            width: widget.dragItemWidth,
-            height: widget.dragItemWidth,
-            decoration: BoxDecoration(
-              color: widget.dragModel.color,
-              borderRadius: BorderRadius.circular(100),
-            ),
-          ),
-          Positioned(
-            top: centerBoxY,
-            child: Container(
-              width: widget.dragItemWidth,
-              height: centerBoxHeight,
-              color: widget.dragModel.color,
-            ),
-          ),
-          Positioned(
-            top: widget.dragModel.height - widget.dragItemWidth,
-            child: Container(
-              width: widget.dragItemWidth,
-              height: widget.dragItemWidth,
-              decoration: BoxDecoration(
-                color: widget.dragModel.color,
-                borderRadius: BorderRadius.circular(100),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
   }
 }

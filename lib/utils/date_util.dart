@@ -14,6 +14,22 @@ class DateUtil {
     return weekDates;
   }
 
+  static String getDurationText(Duration duration, {bool minimize = false}) {
+    if (minimize) {
+      String hour = duration.inHours.toString();
+      String minute = (duration.inMinutes % 60).toString();
+
+      if (hour == "0") {
+        return "${minute}m";
+      } else if (minute == "0") {
+        return "${hour}h";
+      } else {
+        return "${hour}h\n${minute}m";
+      }
+    }
+    return "${duration.inHours.toString().padLeft(2, "0")}:${(duration.inMinutes % 60).toString().padLeft(2, "0")}";
+  }
+
   static String getAbbreviatedWeekday(DateTime date) {
     return DateFormat.E()
         .format(date); // E returns the abbreviated weekday name
