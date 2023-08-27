@@ -19,7 +19,7 @@ class DragItem extends StatefulWidget {
   }) : super(key: key);
 
   final double dragItemWidth;
-  static const double dragItemMaxHeight = 200;
+  static double dragItemMaxHeight = 200;
   final DragModel<int> dragModel;
   final Function(DraggingInfo) onResizeTop;
   final Function(DraggingInfo) onResizeBottom;
@@ -45,6 +45,12 @@ class _DragItemState extends State<DragItem> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      double newMaxHeight = widget.dragItemWidth * 6;
+      if (newMaxHeight != DragItem.dragItemMaxHeight) {
+        DragItem.dragItemMaxHeight = newMaxHeight;
+      }
+    });
     return GestureDetector(
       onTapDown: (details) {
         lastTappedY = details.localPosition.dy;
@@ -71,7 +77,8 @@ class _DragItemState extends State<DragItem> {
       lastTappedY: lastTappedY,
       dragModel: widget.dragModel,
     );
-    print(widget.dragModel.height);
+    print("widget.resizeHeight");
+    print(widget.resizeHeight);
 
     if (lastTappedY < widget.resizeHeight) {
       widget.onResizeTop(draggingInfo);
