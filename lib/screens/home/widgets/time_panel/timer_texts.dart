@@ -22,14 +22,9 @@ class TimerTexts extends StatelessWidget {
           children: List.generate(timeCount, (index) {
             Duration timerDuration =
                 Duration(minutes: wakeTime.inMinutes + 30 * index);
-
-            bool disableFirstHour = index == 1 && wakeTime.inMinutes % 60 == 30;
-            bool disableLastHour =
-                index == timeCount - 2 && sleepTime.inMinutes % 60 == 30;
-
             if (timerDuration.inMinutes % 60 != 0) {
-              return Expanded(
-                  child: const Text(
+              return const Expanded(
+                  child: Text(
                 "-",
                 style: TextStyle(
                   color: AppColors.dark400,
@@ -56,11 +51,12 @@ class TimerTexts extends StatelessWidget {
           width: 50 / 2 + 2,
         ),
         Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: List.generate(
               panelHeight ~/ 16,
               (index) => Container(
                     width: 4,
-                    height: 8,
+                    height: 7,
                     margin: EdgeInsets.all(4),
                     decoration: BoxDecoration(
                         color: Color(0xff3D3D3D),

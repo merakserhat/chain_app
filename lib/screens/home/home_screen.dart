@@ -95,7 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       weekIndex, index - initialDayIndex);
                 });
               },
-              itemBuilder: (context, index) => TimePanel(),
+              itemBuilder: (context, index) {
+                return TimePanel();
+              },
             ),
           ),
         ],

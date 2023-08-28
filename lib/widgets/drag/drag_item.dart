@@ -38,9 +38,6 @@ class _DragItemState extends State<DragItem> {
   @override
   void initState() {
     super.initState();
-    if (widget.isPartial) {
-      print("changed");
-    }
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
 import 'package:chain_app/widgets/drag/drag_item.dart';
 import 'package:chain_app/widgets/drag/drag_model.dart';
@@ -25,8 +26,8 @@ class _TimePanelState extends State<TimePanel> {
   @override
   void initState() {
     super.initState();
-    wakeTime = Duration(hours: 7, minutes: 30);
-    sleepTime = Duration(hours: 24, minutes: 30);
+    wakeTime = Duration(hours: 8, minutes: 0);
+    sleepTime = Duration(hours: 24, minutes: 0);
     _initializePuzzlePieces();
   }
 
@@ -46,6 +47,7 @@ class _TimePanelState extends State<TimePanel> {
           item: i,
           y: i * 120,
           color: color,
+          activityModel: ActivityModel.getBaseActivity(),
         ),
       );
     }
@@ -53,43 +55,49 @@ class _TimePanelState extends State<TimePanel> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        double currentHeight = panelKey.currentContext?.size?.height ?? 0;
-        if (currentHeight != panelHeight) {
-          setState(() {
-            panelHeight = currentHeight;
-          });
-        }
-      },
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
 
-    double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
-
-    return Container(
-      key: panelKey,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppColors.dark600,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          double currentHeight = panelKey.currentContext?.size?.height ?? 0;
+          if (currentHeight != panelHeight) {
+            setState(() {
+              panelHeight = currentHeight;
+              _dragModels.forEach((element) {
+                element.fixDragModel(
+                    panelHeight, (panelHeight / timerCount) * 2, wakeTime);
+              });
+            });
+          }
+        },
+      );
+      return Container(
+        key: panelKey,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          color: AppColors.dark600,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          TimerTexts(
-            wakeTime: wakeTime,
-            sleepTime: sleepTime,
-            panelHeight: panelHeight,
-          ),
-          DragPanel(
-            hourHeight: (panelHeight / timerCount) * 2,
-            dragModels: _dragModels,
-            panelHeight: panelHeight,
-          ),
-        ],
-      ),
-    );
+        child: Stack(
+          children: [
+            TimerTexts(
+              wakeTime: wakeTime,
+              sleepTime: sleepTime,
+              panelHeight: panelHeight,
+            ),
+            DragPanel(
+              hourHeight: (panelHeight / timerCount) * 2,
+              dragModels: _dragModels,
+              panelHeight: panelHeight,
+              wakeTime: wakeTime,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

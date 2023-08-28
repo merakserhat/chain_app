@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +11,16 @@ import 'drag_model.dart';
 import 'dragging_info.dart';
 
 class DragPanel extends StatefulWidget {
-  const DragPanel(
-      {Key? key,
-      required this.hourHeight,
-      required this.dragModels,
-      required this.panelHeight})
-      : super(key: key);
+  const DragPanel({
+    Key? key,
+    required this.hourHeight,
+    required this.dragModels,
+    required this.panelHeight,
+    required this.wakeTime,
+  }) : super(key: key);
 
   final double hourHeight;
+  final Duration wakeTime;
   final double panelHeight;
   final List<DragModel<int>> dragModels;
 
@@ -39,15 +42,6 @@ class _DragPanelState extends State<DragPanel> {
   }
 
   void onResizeTop(DraggingInfo draggingInfo) {
-    /**
-     *
-     * y + height güvenli
-     * new position'ı sokmamız lazım
-     *
-     *
-     *
-     */
-
     double currentPosition = draggingInfo.dragModel.y;
     double currentHeight = draggingInfo.dragModel.height;
     double maxHeight = DragItem.dragItemMaxHeight;
@@ -62,6 +56,8 @@ class _DragPanelState extends State<DragPanel> {
       draggingInfo.dragModel.y = newPosition;
 
       if (!draggingInfo.continues) {
+        draggingInfo.dragModel.fixActivityModel(
+            widget.panelHeight, widget.hourHeight, widget.wakeTime);
         rearrangeOthers(draggingInfo.dragModel);
         return;
       }
@@ -81,6 +77,8 @@ class _DragPanelState extends State<DragPanel> {
       draggingInfo.dragModel.height = newHeight;
 
       if (!draggingInfo.continues) {
+        draggingInfo.dragModel.fixActivityModel(
+            widget.panelHeight, widget.hourHeight, widget.wakeTime);
         rearrangeOthers(draggingInfo.dragModel);
         return;
       }
@@ -110,6 +108,8 @@ class _DragPanelState extends State<DragPanel> {
                 draggingInfo.dragModel.height -
                 widget.hourHeight / 2);
       }
+      draggingInfo.dragModel.fixActivityModel(
+          widget.panelHeight, widget.hourHeight, widget.wakeTime);
       rearrangeOthers(draggingInfo.dragModel);
       return;
     }
@@ -135,6 +135,8 @@ class _DragPanelState extends State<DragPanel> {
         if (otherModel.y < 0) {
           otherModel.y = 0;
         }
+        otherModel.fixActivityModel(
+            widget.panelHeight, widget.hourHeight, widget.wakeTime);
       }
     }
 
@@ -149,6 +151,8 @@ class _DragPanelState extends State<DragPanel> {
           otherModel.y = roundToNearestMultipleOfHeight(
               widget.panelHeight - otherModel.height - widget.hourHeight / 2);
         }
+        otherModel.fixActivityModel(
+            widget.panelHeight, widget.hourHeight, widget.wakeTime);
       }
     }
     checkOverlaps();
@@ -296,7 +300,12 @@ class _DragPanelState extends State<DragPanel> {
     }
 
     DragModel<int> dragModel = DragModel(
-        height: heightRounded, y: yRounded, color: Colors.blueAccent, item: 1);
+      height: heightRounded,
+      y: yRounded,
+      color: Colors.blueAccent,
+      item: 1,
+      activityModel: ActivityModel.getBaseActivity(),
+    );
     _dragModels.add(dragModel);
     rearrangeOthers(dragModel);
     setState(() {});
