@@ -56,6 +56,7 @@ class AppThemes {
       buttonColor: Colors.white,
     ),
     fontFamily: "Poppins",
+    useMaterial3: true,
     primaryColor: AppColors.primary,
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
@@ -73,7 +74,7 @@ class AppThemes {
       {required Color textColor, required Color buttonColor}) {
     return TextTheme(
       titleLarge: TextStyle(
-          color: textColor, fontWeight: FontWeight.w600, fontSize: 16),
+          color: textColor, fontWeight: FontWeight.w600, fontSize: 24),
       titleMedium: TextStyle(
           color: textColor, fontWeight: FontWeight.w600, fontSize: 16),
       titleSmall: TextStyle(

@@ -7,6 +7,7 @@ class AppButton extends StatelessWidget {
   final double? horizontalPadding;
   final double? verticalPadding;
   final FontWeight? fontWeight;
+  final double? fontSize;
   final Color? color;
   final bool disabled;
 
@@ -18,6 +19,7 @@ class AppButton extends StatelessWidget {
     this.horizontalPadding,
     this.verticalPadding,
     this.fontWeight,
+    this.fontSize,
     this.disabled = false,
   });
 
@@ -39,8 +41,9 @@ class AppButton extends StatelessWidget {
             child: Text(
               label,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   fontWeight: fontWeight ?? FontWeight.w600,
+                  fontSize: fontSize ?? 16,
                   color: Colors.white),
             ),
           ),

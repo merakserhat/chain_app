@@ -89,7 +89,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (isAnimatingPage) {
                   return;
                 }
-                print(index);
                 setState(() {
                   panelDate = DateUtil.calculateCurrentDateTime(
                       weekIndex, index - initialDayIndex);

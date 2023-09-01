@@ -40,6 +40,7 @@ dependencies:
   pretty_dio_logger: ^1.2.0-beta-1
   intl: ^0.18.1
   uuid: ^3.0.7
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
