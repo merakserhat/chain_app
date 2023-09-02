@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:chain_app/constants/app_constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AppClient {
   static final AppClient _instance = AppClient._internal();

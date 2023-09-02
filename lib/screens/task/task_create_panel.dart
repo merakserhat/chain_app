@@ -1,5 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/screens/task/widgets/task_icon.dart';
+import 'package:chain_app/screens/task/widgets/task_name_input_field.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 
@@ -11,50 +12,68 @@ class TaskCreatePanel extends StatefulWidget {
 }
 
 class _TaskCreatePanelState extends State<TaskCreatePanel> {
-  TaskIconData? selectedTaskIcon;
+  late TaskIconData selectedTaskIcon;
+  late TextEditingController taskNameController;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedTaskIcon = TaskIconData.getFavTaskIcons(1).first;
+    taskNameController = TextEditingController(text: selectedTaskIcon.name);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.92,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-        color: AppColors.dark700,
-      ),
-      child: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _getPanelHeader(context),
-                  SizedBox(height: 8),
-                  _getIconList(context),
-                ],
-              ),
-            ),
-          ),
-          const Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.all(24.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  label: "Create Task",
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  color: AppColors.primary,
-                  customPadding: EdgeInsets.symmetric(vertical: 12),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height * 0.92,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          color: AppColors.dark700,
+        ),
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _getPanelHeader(context),
+                    const SizedBox(height: 8),
+                    TaskNameInput(
+                      taskIconData: selectedTaskIcon,
+                      taskNameController: taskNameController,
+                    ),
+                    const SizedBox(height: 24),
+                    _getIconList(context),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    label: "Create Task",
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    color: AppColors.primary,
+                    customPadding: EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -70,7 +89,7 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
       ),
       child: Row(
         children: [
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Text(
             "Create ",
             style: Theme.of(context).textTheme.titleLarge,
@@ -106,7 +125,6 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
     int favIconCount =
         MediaQuery.of(context).size.width ~/ (TaskIcon.size + 8) - 1;
     List<TaskIconData> favIcons = TaskIconData.getFavTaskIcons(favIconCount);
-    selectedTaskIcon ??= favIcons.first;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -123,6 +141,7 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
             onSelected: (taskIconData) {
               setState(() {
                 selectedTaskIcon = taskIconData;
+                taskNameController.text = selectedTaskIcon.name;
               });
             },
           ),

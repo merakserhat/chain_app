@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
-import 'package:chain_app/widgets/drag/drag_item.dart';
 import 'package:chain_app/widgets/drag/drag_model.dart';
 import 'package:chain_app/widgets/drag/drag_panel.dart';
 import 'package:flutter/material.dart';

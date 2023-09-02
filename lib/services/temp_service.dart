@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:chain_app/constants/app_constants.dart';
 import 'package:chain_app/services/app_client.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TempService {
   static Future<bool> temp() async {

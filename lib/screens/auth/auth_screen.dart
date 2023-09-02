@@ -3,8 +3,6 @@ import 'package:chain_app/screens/auth/widgets/register_form.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/app_theme.dart';
-
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
 

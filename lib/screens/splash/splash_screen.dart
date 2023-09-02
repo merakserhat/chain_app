@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:chain_app/constants/app_constants.dart';
 import 'package:chain_app/screens/auth/auth_screen.dart';
 import 'package:chain_app/services/app_client.dart';

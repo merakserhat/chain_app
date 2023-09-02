@@ -1,14 +1,12 @@
+import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/helper/auth_validation_errors.dart';
 import 'package:chain_app/models/response/login_response.dart';
-import 'package:chain_app/models/response/register_response.dart';
 import 'package:chain_app/screens/auth/widgets/auth_input.dart';
 import 'package:chain_app/services/mock_auth.dart';
 import 'package:chain_app/utils/validator.dart';
+import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../constants/app_theme.dart';
-import '../../../services/auth_service.dart';
-import '../../../widgets/app_button.dart';
 
 class LoginFormWidget extends StatefulWidget {
   const LoginFormWidget({Key? key, required this.changeAuth}) : super(key: key);
@@ -74,9 +72,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               onTap: () {
                 widget.changeAuth();
               },
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     "Don't you have an account? ",
                     style: TextStyle(
@@ -125,7 +123,6 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
       if (loginResponse.isValid) {
         print("Logged in");
         // TODO: switch to login or go to home screen
-
       }
     }
   }

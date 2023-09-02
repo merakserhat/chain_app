@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class DragItemShape extends StatelessWidget {
@@ -34,8 +32,6 @@ class DragItemShape extends StatelessWidget {
       );
     }
 
-    double centerBoxHeight = max(0, height - dragItemWidth);
-    double centerBoxY = height / 2 - centerBoxHeight / 2;
     return SizedBox(
       width: dragItemWidth,
       height: height,

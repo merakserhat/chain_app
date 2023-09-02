@@ -1,13 +1,12 @@
+import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/helper/auth_validation_errors.dart';
 import 'package:chain_app/models/response/register_response.dart';
 import 'package:chain_app/screens/auth/widgets/auth_input.dart';
 import 'package:chain_app/services/mock_auth.dart';
 import 'package:chain_app/utils/validator.dart';
+import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../constants/app_theme.dart';
-import '../../../services/auth_service.dart';
-import '../../../widgets/app_button.dart';
 
 class RegisterFormWidget extends StatefulWidget {
   const RegisterFormWidget({Key? key, required this.changeAuth})
@@ -86,9 +85,9 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
               onTap: () {
                 widget.changeAuth();
               },
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Text(
                     "Already have an account? ",
                     style: TextStyle(

@@ -3,24 +3,26 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 final class TaskIconData extends Equatable {
-  static const TaskIconData sports =
-      TaskIconData("assets/images/chain.png", "sports");
+  static const TaskIconData sports = TaskIconData(
+    "assets/images/icons/dumbel.png",
+    "Sports",
+  );
   static const TaskIconData study =
-      TaskIconData("assets/images/chain.png", "study");
+      TaskIconData("assets/images/icons/pen.png", "Study");
   static const TaskIconData meal =
-      TaskIconData("assets/images/chain.png", "meal");
+      TaskIconData("assets/images/icons/food.png", "Meal");
   static const TaskIconData football =
-      TaskIconData("assets/images/chain.png", "football");
+      TaskIconData("assets/images/icons/football.png", "Football");
   static const TaskIconData kitchen =
-      TaskIconData("assets/images/chain.png", "kitchen");
+      TaskIconData("assets/images/icons/cooking.png", "Kitchen");
   static const TaskIconData read =
-      TaskIconData("assets/images/chain.png", "read");
+      TaskIconData("assets/images/chain.png", "Read");
   static const TaskIconData film =
-      TaskIconData("assets/images/chain.png", "film");
+      TaskIconData("assets/images/chain.png", "Film");
   static const TaskIconData coffee =
-      TaskIconData("assets/images/chain.png", "coffee");
+      TaskIconData("assets/images/chain.png", "Coffee");
   static const TaskIconData school =
-      TaskIconData("assets/images/chain.png", "school");
+      TaskIconData("assets/images/chain.png", "School");
 
   static List<TaskIconData> getFavTaskIcons(int size) {
     return [sports, study, meal, football, kitchen, read, film, coffee, school]
@@ -42,10 +44,12 @@ class TaskIcon extends StatelessWidget {
     this.othersButton = false,
     this.selected = false,
     required this.onSelected,
+    this.panel = false,
   }) : super(key: key);
 
   final TaskIconData iconData;
   final bool othersButton;
+  final bool panel;
   final bool selected;
   final Function(TaskIconData) onSelected;
 
@@ -54,8 +58,12 @@ class TaskIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onSelected(iconData),
-      child: Container(
+      onTap: () {
+        onSelected(iconData);
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
         width: size,
         height: size,
         decoration: BoxDecoration(
@@ -67,10 +75,12 @@ class TaskIcon extends StatelessWidget {
                   : AppColors.dark600,
         ),
         child: Center(
-          child: SizedBox(
-            width: size - 24,
-            height: size - 24,
-            child: Image.asset(iconData.src),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Image.asset(
+              iconData.src,
+              color: panel ? AppColors.primary : Colors.white,
+            ),
           ),
         ),
       ),

@@ -4,7 +4,6 @@ import 'package:chain_app/screens/home/widgets/header/header_day.dart';
 import 'package:chain_app/screens/home/widgets/header/header_title.dart';
 import 'package:chain_app/screens/task/task_create_panel.dart';
 import 'package:chain_app/utils/date_util.dart';
-import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 
 class HomeHeader extends StatefulWidget {
@@ -85,7 +84,7 @@ class _HomeHeaderState extends State<HomeHeader> {
                           showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
-                              builder: (context) => TaskCreatePanel());
+                              builder: (context) => const TaskCreatePanel());
                         }),
                         IconButton(
                           onPressed: handleSettingsClicked,

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:flutter/material.dart';
 
