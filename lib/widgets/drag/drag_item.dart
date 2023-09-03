@@ -61,7 +61,7 @@ class _DragItemState extends State<DragItem> {
           isPartial: widget.isPartial,
           height: widget.dragModel.height,
           dragItemWidth: widget.dragItemWidth,
-          color: widget.dragModel.color),
+          color: widget.dragModel.activityModel.color),
     );
   }
 

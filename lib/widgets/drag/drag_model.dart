@@ -1,19 +1,16 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:chain_app/models/activity_model.dart';
 
 class DragModel<E> {
   double height;
   double y;
-  Color color;
   ActivityModel activityModel;
   E item;
 
   DragModel({
     required this.height,
     required this.y,
-    required this.color,
     required this.item,
     required this.activityModel,
   });
@@ -31,28 +28,28 @@ class DragModel<E> {
 
   fixActivityModel(double panelHeight, double hourHeight, Duration wakeTime) {
     Duration activityTime =
-        _findActivityTime(panelHeight, hourHeight, wakeTime);
+        findActivityTime(y, panelHeight, hourHeight, wakeTime);
     Duration activityDuration =
-        _findActivityDuration(panelHeight, hourHeight, wakeTime);
+        findActivityDuration(height, panelHeight, hourHeight, wakeTime);
     activityModel.duration = activityDuration;
     activityModel.time = activityTime;
     //TODO update db
   }
 
-  Duration _findActivityTime(
-      double panelHeight, double hourHeight, Duration wakeTime) {
+  static Duration findActivityTime(
+      double y, double panelHeight, double hourHeight, Duration wakeTime) {
     int distanceDuration =
         roundToNearestHalfHour((y * 60) / hourHeight).toInt();
     return Duration(minutes: wakeTime.inMinutes + distanceDuration);
   }
 
-  Duration _findActivityDuration(
-      double panelHeight, double hourHeight, Duration wakeTime) {
+  static Duration findActivityDuration(
+      double height, double panelHeight, double hourHeight, Duration wakeTime) {
     return Duration(
         minutes: roundToNearestHalfHour((60 * height) / hourHeight).toInt());
   }
 
-  double roundToNearestHalfHour(double number) {
+  static double roundToNearestHalfHour(double number) {
     double remainder = number % 30;
     if (remainder <= 15) {
       return number - remainder;

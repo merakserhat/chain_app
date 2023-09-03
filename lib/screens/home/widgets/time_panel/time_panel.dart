@@ -45,7 +45,6 @@ class _TimePanelState extends State<TimePanel> {
           height: height,
           item: i,
           y: i * 120,
-          color: color,
           activityModel: ActivityModel.getBaseActivity(),
         ),
       );

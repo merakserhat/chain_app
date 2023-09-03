@@ -34,8 +34,8 @@ class ActivityModel {
     );
     return ActivityModel(
       id: id,
-      time: Duration(hours: 10),
-      duration: Duration(hours: 1),
+      time: const Duration(hours: 10),
+      duration: const Duration(hours: 1),
       title: id,
       iconPath: "",
       color: color,

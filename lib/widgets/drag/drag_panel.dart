@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/activity_model.dart';
+import 'package:chain_app/screens/task/task_create_panel.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:flutter/material.dart';
@@ -291,25 +292,48 @@ class _DragPanelState extends State<DragPanel> {
         : newDraggableStartPos - height;
     double heightRounded = roundToNearestMultipleOfHeight(height);
     double yRounded = roundToNearestMultipleOfHeight(y);
-    setState(() {
-      newDraggableEndPos = 0;
-      newDraggableStartPos = 0;
-    });
     if (heightRounded == 0) {
       return;
     }
 
-    DragModel<int> dragModel = DragModel(
-      height: heightRounded,
-      y: yRounded,
-      color: Colors.blueAccent,
-      item: 1,
-      activityModel: ActivityModel.getBaseActivity(),
-    );
-    _dragModels.add(dragModel);
-    rearrangeOthers(dragModel);
-    setState(() {});
+    Duration activityTime = DragModel.findActivityTime(
+        yRounded, widget.panelHeight, widget.hourHeight, widget.wakeTime);
+    Duration activityDuration = DragModel.findActivityDuration(
+        heightRounded, widget.panelHeight, widget.hourHeight, widget.wakeTime);
 
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => TaskCreatePanel(
+        initialTime: activityTime,
+        initialDuration: activityDuration,
+        onCreate: (ActivityModel activityModel) {
+          DragModel<int> dragModel = DragModel(
+            height: heightRounded,
+            y: yRounded,
+            item: 1,
+            activityModel: activityModel,
+          );
+          dragModel.fixDragModel(
+              widget.panelHeight, widget.hourHeight, widget.wakeTime);
+          onDrag(
+            DraggingInfo(
+                dy: 0,
+                continues: false,
+                lastTappedY: dragModel.y,
+                dragModel: dragModel),
+          );
+          _dragModels.add(dragModel);
+          rearrangeOthers(dragModel);
+          setState(() {});
+        },
+      ),
+    ).whenComplete(() {
+      setState(() {
+        newDraggableEndPos = 0;
+        newDraggableStartPos = 0;
+      });
+    });
     //TODO panel
   }
 }

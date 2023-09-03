@@ -45,6 +45,7 @@ class TaskIcon extends StatelessWidget {
     this.selected = false,
     required this.onSelected,
     this.panel = false,
+    required this.selectedColor,
   }) : super(key: key);
 
   final TaskIconData iconData;
@@ -52,6 +53,7 @@ class TaskIcon extends StatelessWidget {
   final bool panel;
   final bool selected;
   final Function(TaskIconData) onSelected;
+  final Color selectedColor;
 
   static const double size = 52;
 
@@ -71,7 +73,7 @@ class TaskIcon extends StatelessWidget {
           color: othersButton
               ? Colors.transparent
               : selected
-                  ? AppColors.primary
+                  ? selectedColor
                   : AppColors.dark600,
         ),
         child: Center(
@@ -79,7 +81,7 @@ class TaskIcon extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Image.asset(
               iconData.src,
-              color: panel ? AppColors.primary : Colors.white,
+              color: panel ? selectedColor : Colors.white,
             ),
           ),
         ),
