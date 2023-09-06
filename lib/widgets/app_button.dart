@@ -36,8 +36,8 @@ class AppButton extends StatelessWidget {
           child: Padding(
             padding: customPadding ??
                 EdgeInsets.symmetric(
-                    vertical: verticalPadding ?? 9,
-                    horizontal: horizontalPadding ?? 45),
+                    vertical: verticalPadding ?? 6,
+                    horizontal: horizontalPadding ?? 30),
             child: Text(
               label,
               textAlign: TextAlign.center,

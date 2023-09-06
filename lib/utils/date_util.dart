@@ -16,16 +16,11 @@ class DateUtil {
 
   static String getDurationText(Duration duration, {bool minimize = false}) {
     if (minimize) {
-      String hour = duration.inHours.toString();
-      String minute = (duration.inMinutes % 60).toString();
-
-      if (hour == "0") {
-        return "${minute}m";
-      } else if (minute == "0") {
-        return "${hour}h";
-      } else {
-        return "${hour}h\n${minute}m";
+      if (duration.inMinutes % 60 == 0) {
+        return "${duration.inHours}h";
       }
+
+      return "${duration.inHours},5h";
     }
     return "${duration.inHours.toString().padLeft(2, "0")}:${(duration.inMinutes % 60).toString().padLeft(2, "0")}";
   }

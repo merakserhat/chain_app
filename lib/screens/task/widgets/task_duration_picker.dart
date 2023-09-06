@@ -1,4 +1,5 @@
 import 'package:chain_app/screens/task/widgets/task_create_base_item.dart';
+import 'package:chain_app/utils/date_util.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants/app_theme.dart';
@@ -46,7 +47,8 @@ class TaskDurationPicker extends StatelessWidget {
                           onTap: () => onSelected(duration),
                           child: Center(
                             child: Text(
-                              _getDurationText(duration),
+                              DateUtil.getDurationText(duration,
+                                  minimize: true),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ),
@@ -65,7 +67,8 @@ class TaskDurationPicker extends StatelessWidget {
                           onTap: () => onSelected(duration),
                           child: Center(
                             child: Text(
-                              _getDurationText(duration),
+                              DateUtil.getDurationText(duration,
+                                  minimize: true),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ),
@@ -115,14 +118,6 @@ class TaskDurationPicker extends StatelessWidget {
         );
       }),
     );
-  }
-
-  String _getDurationText(Duration duration) {
-    if (duration.inMinutes % 60 == 0) {
-      return "${duration.inHours}h";
-    }
-
-    return "${duration.inHours},5h";
   }
 
   Offset _getDurationBackgroundSize(

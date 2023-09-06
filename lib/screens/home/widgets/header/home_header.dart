@@ -1,4 +1,5 @@
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/screens/chain/chain_panel.dart';
 import 'package:chain_app/screens/home/widgets/header/chain_button.dart';
 import 'package:chain_app/screens/home/widgets/header/header_day.dart';
 import 'package:chain_app/screens/home/widgets/header/header_title.dart';
@@ -80,10 +81,10 @@ class _HomeHeaderState extends State<HomeHeader> {
                     Row(
                       children: [
                         ChainButton(onPressed: () {
-                          // showModalBottomSheet(
-                          //     context: context,
-                          //     isScrollControlled: true,
-                          //     builder: (context) => const TaskCreatePanel());
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => const ChainPanel());
                         }),
                         IconButton(
                           onPressed: handleSettingsClicked,
