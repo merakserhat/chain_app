@@ -1,7 +1,10 @@
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/screens/chain/routine/routine_list.dart';
 import 'package:chain_app/screens/chain/widgets/content_group.dart';
 import 'package:flutter/material.dart';
+
+import 'routine/create_routine_panel.dart';
 
 class ChainPanel extends StatefulWidget {
   const ChainPanel({Key? key}) : super(key: key);
@@ -17,6 +20,8 @@ class _ChainPanelState extends State<ChainPanel> {
 
   late double pageHeight;
   final double headerHeight = 60;
+
+  List<RoutineModel> routines = [];
 
   @override
   void initState() {
@@ -47,10 +52,25 @@ class _ChainPanelState extends State<ChainPanel> {
               });
             },
             openPanelHeight: calculatePanelSize(),
+            onAdd: () {},
             child: Container(),
           ),
           ContentGroup(
             label: "Routines",
+            onAdd: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) => CreateRoutinePanel(
+                  initialDuration: const Duration(hours: 2),
+                  onCreate: (RoutineModel routineModel) {
+                    setState(() {
+                      routines.add(routineModel);
+                    });
+                  },
+                ),
+              );
+            },
             isOpen: isRoutinesOpen,
             onChange: (isOpen) {
               setState(() {
@@ -58,7 +78,20 @@ class _ChainPanelState extends State<ChainPanel> {
               });
             },
             openPanelHeight: calculatePanelSize(),
-            child: RoutineList(),
+            child: RoutineList(
+              routines: routines,
+              selectOnboardingRoutines: (onboardingRoutines) {
+                setState(() {
+                  //TODO: save
+                  routines = onboardingRoutines;
+                });
+              },
+              deleteRoutine: (routine) {
+                setState(() {
+                  routines.remove(routine);
+                });
+              },
+            ),
           ),
           ContentGroup(
             label: "Templates",
@@ -69,6 +102,7 @@ class _ChainPanelState extends State<ChainPanel> {
               });
             },
             openPanelHeight: calculatePanelSize(),
+            onAdd: () {},
             child: Container(),
           )
         ],

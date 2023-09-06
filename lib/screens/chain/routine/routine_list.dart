@@ -5,20 +5,21 @@ import 'package:chain_app/screens/chain/routine/routine_onboarding.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 
-class RoutineList extends StatefulWidget {
-  const RoutineList({Key? key}) : super(key: key);
-
-  @override
-  State<RoutineList> createState() => _RoutineListState();
-}
-
-class _RoutineListState extends State<RoutineList> {
-  List<RoutineModel> routines = [];
+class RoutineList extends StatelessWidget {
+  const RoutineList({
+    Key? key,
+    required this.routines,
+    required this.selectOnboardingRoutines,
+    required this.deleteRoutine,
+  }) : super(key: key);
+  final List<RoutineModel> routines;
+  final Function(List<RoutineModel>) selectOnboardingRoutines;
+  final Function(RoutineModel) deleteRoutine;
 
   @override
   Widget build(BuildContext context) {
     return routines.isEmpty
-        ? _getEmptyRoutine()
+        ? _getEmptyRoutine(context)
         : SingleChildScrollView(
             child: Column(
                 children: List.generate(
@@ -34,16 +35,21 @@ class _RoutineListState extends State<RoutineList> {
                                 child: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: RoutineListItem(
-                                  routineModel: routines[routineIndex],
-                                  isSelected: false,
-                                  onChange: (_) {}),
+                                routineModel: routines[routineIndex],
+                                isSelected: false,
+                                enableEdit: true,
+                                onDelete: () {
+                                  deleteRoutine(routines[routineIndex]);
+                                },
+                                onChange: (_) {},
+                              ),
                             ));
                           }),
                         ))),
           );
   }
 
-  Widget _getEmptyRoutine() {
+  Widget _getEmptyRoutine(BuildContext context) {
     // return Container();
     return Center(
       child: SingleChildScrollView(
@@ -67,12 +73,7 @@ class _RoutineListState extends State<RoutineList> {
                     context: context,
                     builder: (context) {
                       return RoutineOnboarding(
-                        selectRoutines: (routines) {
-                          setState(() {
-                            this.routines = routines;
-                          });
-                        },
-                      );
+                          selectRoutines: selectOnboardingRoutines);
                     });
               },
             )

@@ -14,6 +14,7 @@ class AppColors {
   static const Color purple = Color(0xffCC5FCC);
   static const Color darkBlue = Color(0xff3C7BBC);
 
+  static const Color dark900 = Color(0xff111111);
   static const Color dark700 = Color(0xff1c1c1e);
   static const Color dark600 = Color(0xff28282a);
   static const Color dark500 = Color(0xff3d3d3d);
@@ -100,6 +101,8 @@ class AppThemes {
           color: buttonColor, fontWeight: FontWeight.w500, fontSize: 16),
       bodyMedium: TextStyle(
           color: buttonColor, fontWeight: FontWeight.w500, fontSize: 14),
+      bodySmall: TextStyle(
+          color: buttonColor, fontWeight: FontWeight.w500, fontSize: 12),
     );
   }
 }

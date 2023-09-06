@@ -8,11 +8,13 @@ class ContentGroup extends StatelessWidget {
     required this.onChange,
     required this.openPanelHeight,
     required this.child,
+    required this.onAdd,
   }) : super(key: key);
 
   final String label;
   final bool isOpen;
   final Function(bool) onChange;
+  final VoidCallback onAdd;
   final double openPanelHeight;
 
   static const double verticalPadding = 12;
@@ -41,10 +43,17 @@ class ContentGroup extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8),
-                    child: Icon(
-                      !isOpen
-                          ? Icons.arrow_drop_up_outlined
-                          : Icons.arrow_drop_down_outlined,
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                            onTap: onAdd, child: Icon(Icons.add_circle)),
+                        const SizedBox(width: 12),
+                        Icon(
+                          !isOpen
+                              ? Icons.arrow_drop_up_outlined
+                              : Icons.arrow_drop_down_outlined,
+                        ),
+                      ],
                     ),
                   )
                 ],
