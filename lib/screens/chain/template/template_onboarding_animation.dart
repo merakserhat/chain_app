@@ -76,13 +76,13 @@ class _TemplateOnboardingAnimationState
         {
           return Column(
             children: [
-              SizedBox(height: actSpaceHeight),
+              SizedBox(height: actSpaceHeight * 2 + act1Height),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
                 color: AppColors.dark500,
-                height: act1Height * 2 + actSpaceHeight,
+                height: act1Height,
               ),
             ],
           );
@@ -151,21 +151,6 @@ class _TemplateOnboardingAnimationState
         {
           return Column(
             children: [
-              SizedBox(height: actSpaceHeight),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 1000),
-                margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
-                width: double.infinity,
-                color: AppColors.dark400,
-                height: act2Height,
-              ),
-              actSpaceHeight == 0
-                  ? Container()
-                  : AnimatedContainer(
-                      duration: const Duration(milliseconds: 1000),
-                      height: act2Height == 0 && actSpaceHeight != 0
-                          ? act1FinalHeight
-                          : 0),
               SizedBox(height: actSpaceHeight),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 1000),
