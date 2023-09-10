@@ -9,6 +9,7 @@ class RoutineModel {
   String title;
   String iconPath;
   Color color;
+  bool showOnPanel;
 
   RoutineModel({
     required this.id,
@@ -16,6 +17,7 @@ class RoutineModel {
     required this.title,
     required this.iconPath,
     required this.color,
+    required this.showOnPanel,
   });
 
   static RoutineModel getBaseRoutine() {
@@ -26,6 +28,7 @@ class RoutineModel {
       title: "Football",
       iconPath: "assets/images/icons/football.png",
       color: AppColors.green,
+      showOnPanel: true,
     );
   }
 }

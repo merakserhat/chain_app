@@ -1,5 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/screens/chain/routine/routine_show_checkbox.dart';
 import 'package:chain_app/screens/task/widgets/task_color_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_duration_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_icon.dart';
@@ -27,6 +28,7 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
   late TextEditingController taskNameController;
   late Color selectedColor;
   late Duration selectedDuration;
+  late bool isShow = true;
 
   @override
   void initState() {
@@ -87,6 +89,18 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
                         });
                       },
                     ),
+                    const SizedBox(height: 32),
+                    RoutineShowCheckbox(
+                        change: (isShow) {
+                          if (isShow == null) {
+                            return;
+                          }
+                          setState(() {
+                            this.isShow = isShow;
+                          });
+                        },
+                        isChecked: isShow,
+                        color: selectedColor),
                   ],
                 ),
               ),
@@ -107,6 +121,7 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
                       String id = const Uuid().v1();
                       RoutineModel routineModel = RoutineModel(
                         id: id,
+                        showOnPanel: isShow,
                         duration: selectedDuration,
                         title: taskNameController.text,
                         iconPath: selectedTaskIcon.src,

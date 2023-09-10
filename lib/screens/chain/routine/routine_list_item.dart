@@ -49,16 +49,17 @@ class RoutineListItem extends StatelessWidget {
           color: isSelected ? Colors.white : AppColors.dark600,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
           child: Row(
             children: [
               SizedBox(
-                  width: 28,
-                  height: 28,
-                  child: Image.asset(
-                    routineModel.iconPath,
-                    color: routineModel.color,
-                  )),
+                width: 28,
+                height: 28,
+                child: Image.asset(
+                  routineModel.iconPath,
+                  color: routineModel.color,
+                ),
+              ),
               const SizedBox(width: 16),
               Expanded(
                   child: Column(
@@ -80,7 +81,17 @@ class RoutineListItem extends StatelessWidget {
                             isSelected ? AppColors.dark700 : AppColors.dark400),
                   ),
                 ],
-              ))
+              )),
+              routineModel.showOnPanel
+                  ? const Align(
+                      alignment: Alignment.topCenter,
+                      child: Icon(
+                        Icons.remove_red_eye,
+                        size: 16,
+                        color: AppColors.dark400,
+                      ),
+                    )
+                  : Container()
             ],
           ),
         ),

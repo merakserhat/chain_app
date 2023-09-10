@@ -22,36 +22,42 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
         duration: const Duration(hours: 1),
         title: "Meal",
         iconPath: "assets/images/icons/food.png",
+        showOnPanel: true,
         color: AppColors.yellow),
     RoutineModel(
         id: "1",
         duration: const Duration(minutes: 90),
         title: "Gym",
         iconPath: "assets/images/icons/dumbell.png",
+        showOnPanel: true,
         color: AppColors.red),
     RoutineModel(
         id: "2",
         duration: const Duration(hours: 2),
         title: "Study",
         iconPath: "assets/images/icons/pen.png",
+        showOnPanel: true,
         color: AppColors.blue),
     RoutineModel(
         id: "3",
         duration: const Duration(hours: 1),
         title: "Cooking",
         iconPath: "assets/images/icons/cooking.png",
+        showOnPanel: true,
         color: AppColors.purple),
     RoutineModel(
         id: "4",
         duration: const Duration(hours: 2),
         title: "Football",
         iconPath: "assets/images/icons/football.png",
+        showOnPanel: true,
         color: AppColors.green),
     RoutineModel(
         id: "5",
         duration: const Duration(hours: 2),
         title: "Film",
         iconPath: "assets/images/icons/monitor.png",
+        showOnPanel: true,
         color: AppColors.darkBlue),
   ];
 
