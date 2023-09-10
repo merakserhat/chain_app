@@ -2,6 +2,7 @@ import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/screens/chain/routine/routine_list.dart';
 import 'package:chain_app/screens/chain/template/create_template_panel.dart';
+import 'package:chain_app/screens/chain/template/template_list.dart';
 import 'package:chain_app/screens/chain/widgets/content_group.dart';
 import 'package:flutter/material.dart';
 
@@ -117,7 +118,10 @@ class _ChainPanelState extends State<ChainPanel> {
                 ),
               );
             },
-            child: Container(),
+            child: TemplateList(
+                routines: routines,
+                templates: [],
+                deleteTemplate: (template) {}),
           )
         ],
       ),
