@@ -4,7 +4,9 @@ import 'package:chain_app/utils/date_util.dart';
 import 'package:flutter/material.dart';
 
 class TemplateDateSelector extends StatefulWidget {
-  const TemplateDateSelector({Key? key}) : super(key: key);
+  const TemplateDateSelector({Key? key, required this.dateSelectorController})
+      : super(key: key);
+  final DateSelectorController dateSelectorController;
 
   @override
   State<TemplateDateSelector> createState() => _TemplateDateSelectorState();
@@ -23,6 +25,7 @@ class _TemplateDateSelectorState extends State<TemplateDateSelector> {
   @override
   Widget build(BuildContext context) {
     List<String> days = ["Mon", "Tue", "Wed", "Thr", "Fri", "Sat", "Sun"];
+    widget.dateSelectorController.selectedDurations = selectedDurations;
     return TaskCreateBaseItem(
       label: "Which dates?",
       child: Container(
@@ -52,9 +55,9 @@ class _TemplateDateSelectorState extends State<TemplateDateSelector> {
                               width:
                                   (MediaQuery.of(context).size.width - 8 - 24) /
                                       7,
-                              padding: EdgeInsets.all(4),
+                              padding: const EdgeInsets.all(4),
                               child: AnimatedContainer(
-                                duration: Duration(milliseconds: 200),
+                                duration: const Duration(milliseconds: 200),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: selectedDays.contains(day)
@@ -87,7 +90,7 @@ class _TemplateDateSelectorState extends State<TemplateDateSelector> {
                                     behavior: HitTestBehavior.opaque,
                                     onTap: () {
                                       if (!selectedDays.contains(day)) {
-                                        return;
+                                        selectedDays.add(day);
                                       }
                                       List<Duration> selecteds =
                                           selectedDurations[dayIndex];
@@ -173,9 +176,67 @@ class _TemplateDateSelectorState extends State<TemplateDateSelector> {
                       ))
                   .toList(),
             ),
+            ...selectedDurations.map((durations) {
+              if (durations.length == 2) {
+                return TemplateDurationSelectedItem(
+                    durations: durations,
+                    day: days[selectedDurations.indexOf(durations)],
+                    onDelete: () {
+                      int dayIndex = selectedDurations.indexOf(durations);
+                      setState(() {
+                        selectedDurations[dayIndex] = [];
+                        selectedDays.remove(days[dayIndex]);
+                      });
+                    });
+              }
+              return Container();
+            })
           ],
         ),
       ),
     );
   }
+}
+
+class TemplateDurationSelectedItem extends StatelessWidget {
+  const TemplateDurationSelectedItem(
+      {Key? key,
+      required this.durations,
+      required this.day,
+      required this.onDelete})
+      : super(key: key);
+
+  final List<Duration> durations;
+  final String day;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onDelete,
+          child: const Padding(
+            padding: EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.delete,
+              color: AppColors.dark300,
+            ),
+          ),
+        ),
+        Text(
+          "Every ${day} ${DateUtil.getDurationText(durations[0])} - ${DateUtil.getDurationText(durations[1])}",
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: AppColors.dark300),
+        ),
+      ],
+    );
+  }
+}
+
+class DateSelectorController {
+  List<List<Duration>> selectedDurations = [];
 }

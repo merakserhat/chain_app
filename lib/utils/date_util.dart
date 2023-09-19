@@ -1,6 +1,16 @@
 import 'package:intl/intl.dart';
 
 class DateUtil {
+  static const List<String> days = [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thr",
+    "Fri",
+    "Sat",
+    "Sun"
+  ];
+
   static List<DateTime> getWeekDates(DateTime currentDate) {
     List<DateTime> weekDates = [];
     DateTime startOfWeek =

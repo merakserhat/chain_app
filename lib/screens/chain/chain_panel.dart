@@ -1,5 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/models/template_model.dart';
 import 'package:chain_app/screens/chain/habit/chain_path.dart';
 import 'package:chain_app/screens/chain/routine/create_routine_panel.dart';
 import 'package:chain_app/screens/chain/routine/routine_list.dart';
@@ -24,6 +25,7 @@ class _ChainPanelState extends State<ChainPanel> {
   final double headerHeight = 60;
 
   List<RoutineModel> routines = [];
+  List<TemplateModel> templates = [];
 
   @override
   void initState() {
@@ -111,18 +113,23 @@ class _ChainPanelState extends State<ChainPanel> {
                 isScrollControlled: true,
                 builder: (context) => CreateTemplatePanel(
                   routines: routines,
-                  onCreate: (RoutineModel routineModel) {
+                  onCreate: (TemplateModel templateModel) {
                     setState(() {
-                      routines.add(routineModel);
+                      templates.add(templateModel);
                     });
                   },
                 ),
               );
             },
             child: TemplateList(
-                routines: routines,
-                templates: [],
-                deleteTemplate: (template) {}),
+              routines: routines,
+              templates: templates,
+              deleteTemplate: (template) {
+                setState(() {
+                  templates.remove(template);
+                });
+              },
+            ),
           )
         ],
       ),

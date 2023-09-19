@@ -5,10 +5,10 @@ import 'package:chain_app/models/routine_model.dart';
 import 'package:uuid/uuid.dart';
 
 class TemplateModel extends RoutineModel {
-  final Duration time;
+  final List<List<Duration>> durations;
 
   TemplateModel({
-    required this.time,
+    required this.durations,
     required super.id,
     required super.duration,
     required super.title,
@@ -20,7 +20,15 @@ class TemplateModel extends RoutineModel {
   static TemplateModel getBaseRoutine() {
     String id = const Uuid().v1();
     return TemplateModel(
-      time: const Duration(hours: 14),
+      durations: [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [const Duration(hours: 14), const Duration(hours: 16)]
+      ],
       showOnPanel: false,
       id: id,
       duration: const Duration(hours: 1),

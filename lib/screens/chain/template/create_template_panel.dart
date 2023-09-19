@@ -1,9 +1,11 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/models/template_model.dart';
 import 'package:chain_app/screens/chain/template/template_date_selector.dart';
 import 'package:chain_app/screens/chain/widgets/routine_selector_dropdown.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateTemplatePanel extends StatefulWidget {
   const CreateTemplatePanel({
@@ -12,7 +14,7 @@ class CreateTemplatePanel extends StatefulWidget {
     required this.routines,
   }) : super(key: key);
 
-  final Function(RoutineModel routineModel) onCreate;
+  final Function(TemplateModel) onCreate;
   final List<RoutineModel> routines;
   @override
   State<CreateTemplatePanel> createState() => _TaskCreatePanelState();
@@ -20,6 +22,7 @@ class CreateTemplatePanel extends StatefulWidget {
 
 class _TaskCreatePanelState extends State<CreateTemplatePanel> {
   RoutineModel? selectedRoutine;
+  DateSelectorController dateSelectorController = DateSelectorController();
 
   @override
   void initState() {
@@ -60,7 +63,12 @@ class _TaskCreatePanelState extends State<CreateTemplatePanel> {
                       selectedRoutine: selectedRoutine,
                     ),
                     const SizedBox(height: 8),
-                    TemplateDateSelector(),
+                    TemplateDateSelector(
+                      dateSelectorController: dateSelectorController,
+                    ),
+                    const SizedBox(
+                      height: 120,
+                    )
                   ],
                 ),
               ),
@@ -78,16 +86,23 @@ class _TaskCreatePanelState extends State<CreateTemplatePanel> {
                     color: _getColor(),
                     customPadding: EdgeInsets.symmetric(vertical: 12),
                     onPressed: () {
-                      // String id = const Uuid().v1();
-                      // RoutineModel routineModel = RoutineModel(
-                      //   id: id,
-                      //   showOnPanel: isShow,
-                      //   duration: selectedDuration,
-                      //   title: taskNameController.text,
-                      //   iconPath: selectedTaskIcon.src,
-                      //   color: selectedColor,
-                      // );
-                      // widget.onCreate(routineModel);
+                      if (selectedRoutine == null ||
+                          !dateSelectorController.selectedDurations
+                              .any((element) => element.length > 1)) {
+                        return;
+                      }
+                      String id = const Uuid().v1();
+                      TemplateModel templateModel = TemplateModel(
+                        durations: dateSelectorController.selectedDurations,
+                        id: id,
+                        duration: const Duration(),
+                        title: selectedRoutine!.title,
+                        iconPath: selectedRoutine!.iconPath,
+                        color: selectedRoutine!.color,
+                        showOnPanel: selectedRoutine!.showOnPanel,
+                      );
+
+                      widget.onCreate(templateModel);
                       Navigator.of(context).pop();
                     },
                   ),

@@ -77,7 +77,7 @@ class RoutineSelectorDropdown extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.transparent,
+                color: AppColors.dark700,
               ),
               elevation: 0,
               useSafeArea: true,

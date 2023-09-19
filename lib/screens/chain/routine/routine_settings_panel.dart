@@ -10,10 +10,12 @@ class RoutineSettingsPanel extends StatelessWidget {
     Key? key,
     required this.routineModel,
     required this.onDelete,
+    this.objectName = "routine",
   }) : super(key: key);
 
   final RoutineModel routineModel;
   final VoidCallback onDelete;
+  final String objectName;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class RoutineSettingsPanel extends StatelessWidget {
                             backgroundColor: Colors.transparent,
                             elevation: 0,
                             builder: (context) => DeleteWarning(
-                                objectName: "routine",
+                                objectName: objectName,
                                 onDelete: () {
                                   Navigator.of(context).pop();
                                   onDelete();
