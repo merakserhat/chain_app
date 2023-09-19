@@ -1,12 +1,12 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/screens/chain/habit/chain_path.dart';
+import 'package:chain_app/screens/chain/routine/create_routine_panel.dart';
 import 'package:chain_app/screens/chain/routine/routine_list.dart';
 import 'package:chain_app/screens/chain/template/create_template_panel.dart';
 import 'package:chain_app/screens/chain/template/template_list.dart';
 import 'package:chain_app/screens/chain/widgets/content_group.dart';
 import 'package:flutter/material.dart';
-
-import 'routine/create_routine_panel.dart';
 
 class ChainPanel extends StatefulWidget {
   const ChainPanel({Key? key}) : super(key: key);
@@ -55,7 +55,8 @@ class _ChainPanelState extends State<ChainPanel> {
             },
             openPanelHeight: calculatePanelSize(),
             onAdd: () {},
-            child: Container(),
+            child: Container(
+                color: Colors.blue, child: Center(child: ChainPath())),
           ),
           ContentGroup(
             label: "Routines",

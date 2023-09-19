@@ -69,4 +69,12 @@ class DateUtil {
     print(incrementDay);
     return today.add(Duration(days: (7 * weekIndex) + incrementDay));
   }
+
+  static bool isInBetween(
+      {required Duration duration,
+      required Duration start,
+      required Duration end}) {
+    return end.inMinutes > duration.inMinutes &&
+        duration.inMinutes > start.inMinutes;
+  }
 }

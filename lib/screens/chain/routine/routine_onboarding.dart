@@ -87,22 +87,22 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
                   crossAxisSpacing: 10,
                   childAspectRatio: 2.3,
                   children: List.generate(
-                      6,
+                      routines.length,
                       (index) => Row(
                             children: [
                               Expanded(
-                                  child: RoutineListItem(
-                                      routineModel: routines[index],
-                                      isSelected:
-                                          selectedIndexes.contains(index),
-                                      onChange: (selected) {
-                                        if (selected) {
-                                          selectedIndexes.add(index);
-                                        } else {
-                                          selectedIndexes.remove(index);
-                                        }
-                                        setState(() {});
-                                      })),
+                                child: RoutineListItem(
+                                    routineModel: routines[index],
+                                    isSelected: selectedIndexes.contains(index),
+                                    onChange: (selected) {
+                                      if (selected) {
+                                        selectedIndexes.add(index);
+                                      } else {
+                                        selectedIndexes.remove(index);
+                                      }
+                                      setState(() {});
+                                    }),
+                              ),
                             ],
                           )),
                 ),

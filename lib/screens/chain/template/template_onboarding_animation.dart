@@ -81,8 +81,11 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark500,
                 height: act1Height,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark500,
+                ),
               ),
             ],
           );
@@ -96,8 +99,11 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark500,
                 height: act1Height * 2 + actSpaceHeight,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark500,
+                ),
               ),
             ],
           );
@@ -111,7 +117,10 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark400,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark400,
+                ),
                 height: act2Height,
               ),
               actSpaceHeight == 0
@@ -126,8 +135,11 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark500,
                 height: act1Height,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark500,
+                ),
               )
             ],
           );
@@ -141,7 +153,10 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark500,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark500,
+                ),
                 height: act1Height * 2 + actSpaceHeight,
               ),
             ],
@@ -156,8 +171,11 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark500,
                 height: act1Height,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark500,
+                ),
               )
             ],
           );
@@ -171,8 +189,11 @@ class _TemplateOnboardingAnimationState
                 duration: const Duration(milliseconds: 1000),
                 margin: EdgeInsets.symmetric(horizontal: actSpaceHeight / 4),
                 width: double.infinity,
-                color: AppColors.dark400,
                 height: 3 * act2Height,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.dark400,
+                ),
               ),
             ],
           );
