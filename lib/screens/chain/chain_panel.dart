@@ -2,6 +2,7 @@ import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/models/template_model.dart';
 import 'package:chain_app/screens/chain/habit/chain_path.dart';
+import 'package:chain_app/screens/chain/habit/habit_list.dart';
 import 'package:chain_app/screens/chain/routine/create_routine_panel.dart';
 import 'package:chain_app/screens/chain/routine/routine_list.dart';
 import 'package:chain_app/screens/chain/template/create_template_panel.dart';
@@ -57,8 +58,10 @@ class _ChainPanelState extends State<ChainPanel> {
             },
             openPanelHeight: calculatePanelSize(),
             onAdd: () {},
-            child: Container(
-                color: Colors.blue, child: Center(child: ChainPath())),
+            child: HabitList(
+                routines: routines,
+                selectOnboardingRoutines: (_) {},
+                deleteRoutine: (habit) {}),
           ),
           ContentGroup(
             label: "Routines",
