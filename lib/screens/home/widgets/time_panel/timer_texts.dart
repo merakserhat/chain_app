@@ -13,6 +13,7 @@ class TimerTexts extends StatelessWidget {
   final Duration sleepTime;
   final Duration wakeTime;
   final double panelHeight;
+  static const double timerLinePadding = 27;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class TimerTexts extends StatelessWidget {
           }),
         ),
         const SizedBox(
-          width: 50 / 2 + 2,
+          width: timerLinePadding,
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

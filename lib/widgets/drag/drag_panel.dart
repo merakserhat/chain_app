@@ -188,6 +188,7 @@ class _DragPanelState extends State<DragPanel> {
     return Center(
       child: Column(
         children: [
+          // SizedBox(height: DragPanel.panelFixedTabHeight),
           SizedBox(height: widget.hourHeight / 4),
           Expanded(
             child: GestureDetector(

@@ -28,6 +28,8 @@ class _ChainPanelState extends State<ChainPanel> {
   List<RoutineModel> routines = [];
   List<TemplateModel> templates = [];
 
+  final int numPanel = 2;
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +38,6 @@ class _ChainPanelState extends State<ChainPanel> {
   @override
   Widget build(BuildContext context) {
     pageHeight = MediaQuery.of(context).size.height * 0.92;
-
     return Container(
       width: double.infinity,
       height: pageHeight,
@@ -48,21 +49,21 @@ class _ChainPanelState extends State<ChainPanel> {
       child: Column(
         children: [
           _getPanelHeader(context),
-          ContentGroup(
-            label: "Habits",
-            isOpen: isHabitsOpen,
-            onChange: (isOpen) {
-              setState(() {
-                isHabitsOpen = isOpen;
-              });
-            },
-            openPanelHeight: calculatePanelSize(),
-            onAdd: () {},
-            child: HabitList(
-                routines: routines,
-                selectOnboardingRoutines: (_) {},
-                deleteRoutine: (habit) {}),
-          ),
+          // ContentGroup(
+          //   label: "Habits",
+          //   isOpen: isHabitsOpen,
+          //   onChange: (isOpen) {
+          //     setState(() {
+          //       isHabitsOpen = isOpen;
+          //     });
+          //   },
+          //   openPanelHeight: calculatePanelSize(),
+          //   onAdd: () {},
+          //   child: HabitList(
+          //       routines: routines,
+          //       selectOnboardingRoutines: (_) {},
+          //       deleteRoutine: (habit) {}),
+          // ),
           ContentGroup(
             label: "Routines",
             onAdd: () {
@@ -140,7 +141,8 @@ class _ChainPanelState extends State<ChainPanel> {
   }
 
   double calculatePanelSize() {
-    List<bool> panels = [isHabitsOpen, isRoutinesOpen, isTemplatesOpen];
+    // List<bool> panels = [isHabitsOpen, isRoutinesOpen, isTemplatesOpen];
+    List<bool> panels = [isRoutinesOpen, isTemplatesOpen];
 
     panels.removeWhere((element) => !element);
     int openCount = panels.length;
@@ -150,10 +152,10 @@ class _ChainPanelState extends State<ChainPanel> {
     }
 
     double panelsHeight = pageHeight;
-    panelsHeight -= 6 * ContentGroup.verticalPadding;
-    panelsHeight -= 3 * ContentGroup.labelHeight;
+    panelsHeight -= (2 * numPanel) * ContentGroup.verticalPadding;
+    panelsHeight -= numPanel * ContentGroup.labelHeight;
     panelsHeight -= headerHeight;
-    panelsHeight -= 6;
+    panelsHeight -= 2 * numPanel;
 
     return panelsHeight / openCount;
   }
