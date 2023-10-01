@@ -10,11 +10,9 @@ import 'package:flutter/material.dart';
 class TemplateList extends StatelessWidget {
   const TemplateList({
     Key? key,
-    required this.routines,
     required this.templates,
     required this.deleteTemplate,
   }) : super(key: key);
-  final List<RoutineModel> routines;
   final List<TemplateModel> templates;
   final Function(TemplateModel) deleteTemplate;
 

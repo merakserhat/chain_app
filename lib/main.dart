@@ -2,8 +2,10 @@ import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/screens/auth/auth_screen.dart';
 import 'package:chain_app/screens/home/home_screen.dart';
 import 'package:chain_app/screens/splash/splash_screen.dart';
+import 'package:chain_app/utils/program.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +21,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: AppThemes.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: ChangeNotifierProvider.value(
+        value: Program(),
+        child: const MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
     );
   }
 }

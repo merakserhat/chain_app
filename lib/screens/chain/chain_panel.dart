@@ -8,6 +8,7 @@ import 'package:chain_app/screens/chain/routine/routine_list.dart';
 import 'package:chain_app/screens/chain/template/create_template_panel.dart';
 import 'package:chain_app/screens/chain/template/template_list.dart';
 import 'package:chain_app/screens/chain/widgets/content_group.dart';
+import 'package:chain_app/utils/program.dart';
 import 'package:flutter/material.dart';
 
 class ChainPanel extends StatefulWidget {
@@ -25,7 +26,6 @@ class _ChainPanelState extends State<ChainPanel> {
   late double pageHeight;
   final double headerHeight = 60;
 
-  List<RoutineModel> routines = [];
   List<TemplateModel> templates = [];
 
   final int numPanel = 2;
@@ -33,6 +33,7 @@ class _ChainPanelState extends State<ChainPanel> {
   @override
   void initState() {
     super.initState();
+    Program().addListener(() => mounted ? setState(() {}) : null);
   }
 
   @override
@@ -73,9 +74,8 @@ class _ChainPanelState extends State<ChainPanel> {
                 builder: (context) => CreateRoutinePanel(
                   initialDuration: const Duration(hours: 2),
                   onCreate: (RoutineModel routineModel) {
-                    setState(() {
-                      routines.add(routineModel);
-                    });
+                    Program().updateRoutines(
+                        () => Program().routines.add(routineModel));
                   },
                 ),
               );
@@ -88,17 +88,14 @@ class _ChainPanelState extends State<ChainPanel> {
             },
             openPanelHeight: calculatePanelSize(),
             child: RoutineList(
-              routines: routines,
               selectOnboardingRoutines: (onboardingRoutines) {
-                setState(() {
-                  //TODO: save
-                  routines = onboardingRoutines;
-                });
+                //TODO: save
+                Program().updateRoutines(
+                    () => Program().routines = onboardingRoutines);
               },
               deleteRoutine: (routine) {
-                setState(() {
-                  routines.remove(routine);
-                });
+                Program()
+                    .updateRoutines(() => Program().routines.remove(routine));
               },
             ),
           ),
@@ -116,7 +113,7 @@ class _ChainPanelState extends State<ChainPanel> {
                 context: context,
                 isScrollControlled: true,
                 builder: (context) => CreateTemplatePanel(
-                  routines: routines,
+                  routines: Program().routines,
                   onCreate: (TemplateModel templateModel) {
                     setState(() {
                       templates.add(templateModel);
@@ -126,7 +123,6 @@ class _ChainPanelState extends State<ChainPanel> {
               );
             },
             child: TemplateList(
-              routines: routines,
               templates: templates,
               deleteTemplate: (template) {
                 setState(() {

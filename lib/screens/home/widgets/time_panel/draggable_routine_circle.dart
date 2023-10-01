@@ -60,6 +60,15 @@ class DraggableRoutineCircle extends StatelessWidget {
             dragging: false,
           ));
         },
+        onHorizontalDragEnd: (info) {
+          dragged(DraggableRoutineInfo(
+            globalPos: calculateCenterPos(
+                info.velocity.pixelsPerSecond, info.velocity.pixelsPerSecond),
+            routineModel: routine,
+            hourHeight: hourHeight,
+            dragging: false,
+          ));
+        },
         child: RoutineCircle(hourHeight: hourHeight, routine: routine));
   }
 

@@ -26,10 +26,10 @@ class DragPanel extends StatefulWidget {
   final List<DragModel<int>> dragModels;
 
   @override
-  State<DragPanel> createState() => _DragPanelState();
+  State<DragPanel> createState() => DragPanelState();
 }
 
-class _DragPanelState extends State<DragPanel> {
+class DragPanelState extends State<DragPanel> {
   late List<DragModel<int>> _dragModels;
   final List<Offset> overlaps = [];
 
@@ -40,6 +40,7 @@ class _DragPanelState extends State<DragPanel> {
   void initState() {
     super.initState();
     _dragModels = widget.dragModels;
+    print("sa");
   }
 
   void onResizeTop(DraggingInfo draggingInfo) {

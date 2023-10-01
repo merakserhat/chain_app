@@ -5,10 +5,12 @@ import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circle.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
+import 'package:chain_app/utils/program.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:chain_app/widgets/drag/drag_model.dart';
 import 'package:chain_app/widgets/drag/drag_panel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TimePanel extends StatefulWidget {
   const TimePanel({Key? key}) : super(key: key);
@@ -26,35 +28,36 @@ class _TimePanelState extends State<TimePanel> {
   static const double panelFixedTabHeight = 72;
   double stackHeightDiff = 0;
   DraggableRoutineInfo? draggingRoutine;
+  GlobalKey<DragPanelState> dragPanelKey = GlobalKey();
 
   List<DragModel<int>> _dragModels = [];
   @override
   void initState() {
     super.initState();
-    wakeTime = Duration(hours: 8, minutes: 0);
-    sleepTime = Duration(hours: 24, minutes: 0);
+    wakeTime = const Duration(hours: 8, minutes: 0);
+    sleepTime = const Duration(hours: 24, minutes: 0);
     _initializePuzzlePieces();
   }
 
   void _initializePuzzlePieces() {
-    for (int i = 0; i < 4; i++) {
-      double height = Random().nextDouble() * 80 + 40;
-      Color color = Color.fromRGBO(
-        Random().nextInt(256),
-        Random().nextInt(256),
-        Random().nextInt(256),
-        1.0,
-      );
-
-      _dragModels.add(
-        DragModel(
-          height: height,
-          item: i,
-          y: i * 120,
-          activityModel: ActivityModel.getBaseActivity(),
-        ),
-      );
-    }
+    // for (int i = 0; i < 4; i++) {
+    //   double height = Random().nextDouble() * 80 + 40;
+    //   Color color = Color.fromRGBO(
+    //     Random().nextInt(256),
+    //     Random().nextInt(256),
+    //     Random().nextInt(256),
+    //     1.0,
+    //   );
+    //
+    //   _dragModels.add(
+    //     DragModel(
+    //       height: height,
+    //       item: i,
+    //       y: i * 120,
+    //       activityModel: ActivityModel.getBaseActivity(),
+    //     ),
+    //   );
+    // }
   }
 
   @override
@@ -121,28 +124,43 @@ class _TimePanelState extends State<TimePanel> {
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(
-                                12,
-                                (index) => Container(
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 4),
-                                      child: DraggableRoutineCircle(
-                                        hourHeight:
-                                            (panelHeight / timerCount) * 2,
-                                        routine: RoutineModel.getBaseRoutine(),
-                                        dragged: (draggableInfo) {
-                                          if (draggableInfo.dragging) {
-                                            setState(() {
-                                              draggingRoutine = draggableInfo;
-                                            });
-                                          } else {
-                                            createNewDraggableFromRoutines();
-                                          }
-                                        },
-                                      ),
-                                    )),
-                          ),
+                          child: Consumer<Program>(
+                              builder: (context, program, child) {
+                            return Row(
+                              children: List.generate(
+                                  Program().routines.length,
+                                  (index) => Container(
+                                        margin:
+                                            EdgeInsets.symmetric(horizontal: 4),
+                                        child: DraggableRoutineCircle(
+                                          hourHeight:
+                                              (panelHeight / timerCount) * 2,
+                                          routine: Program().routines[index],
+                                          dragged: (draggableInfo) {
+                                            print(draggableInfo.dragging);
+                                            if (draggableInfo.dragging) {
+                                              // print(draggableInfo.globalPos.dx);
+                                              setState(() {
+                                                draggingRoutine = draggableInfo;
+                                              });
+                                              return;
+                                            }
+                                            if (draggingRoutine!.globalPos.dx <
+                                                    90 &&
+                                                10 <
+                                                    draggingRoutine!
+                                                        .globalPos.dx) {
+                                              createNewDraggableFromRoutines();
+                                            } else {
+                                              setState(() {
+                                                draggingRoutine = null;
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      )),
+                            );
+                          }),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -158,6 +176,7 @@ class _TimePanelState extends State<TimePanel> {
                         panelHeight: panelHeight,
                       ),
                       DragPanel(
+                        key: dragPanelKey,
                         hourHeight: (panelHeight / timerCount) * 2,
                         dragModels: _dragModels,
                         panelHeight: panelHeight,
@@ -191,6 +210,7 @@ class _TimePanelState extends State<TimePanel> {
                     top: draggingRoutine!.globalPos.dy - stackHeightDiff,
                     left: draggingRoutine!.globalPos.dx,
                     child: DragItemShape(
+                      iconPath: draggingRoutine!.routineModel.iconPath,
                       isPartial:
                           draggingRoutine!.routineModel.duration.inMinutes < 60,
                       height:
@@ -231,6 +251,7 @@ class _TimePanelState extends State<TimePanel> {
       dragModel.fixDragModel(
           panelHeight, draggingRoutine!.hourHeight, wakeTime);
       _dragModels.add(dragModel);
+      dragPanelKey.currentState?.rearrangeOthers(dragModel);
       draggingRoutine = null;
     });
   }
