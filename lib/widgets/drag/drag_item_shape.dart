@@ -8,16 +8,16 @@ class DragItemShape extends StatelessWidget {
     required this.height,
     required this.dragItemWidth,
     required this.color,
-    this.updating = false,
     this.iconPath,
     this.child,
+    this.isMoving = false,
   }) : super(key: key);
 
   final bool isPartial;
   final double height;
   final double dragItemWidth;
   final Color color;
-  final bool updating;
+  final bool isMoving;
   final String? iconPath;
   final Widget? child;
 
@@ -38,57 +38,33 @@ class DragItemShape extends StatelessWidget {
     return SizedBox(
       width: dragItemWidth,
       height: height,
-      child: Stack(
-        children: [
-          Container(
-            width: dragItemWidth,
-            height: height,
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: getColor(),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: iconPath != null
-                ? Center(
-                    child: Image.asset(
-                      iconPath!,
-                      color: color,
-                    ),
-                  )
-                : Container(),
-          ),
-          // Positioned(
-          //   top: centerBoxY,
-          //   child: Container(
-          //     width: dragItemWidth,
-          //     height: centerBoxHeight,
-          //     color: getColor(),
-          //   ),
-          // ),
-          // Positioned(
-          //   top: height - dragItemWidth,
-          //   child: Container(
-          //     width: dragItemWidth,
-          //     height: dragItemWidth,
-          //     decoration: BoxDecoration(
-          //       color: getColor(),
-          //       borderRadius: BorderRadius.circular(100),
-          //     ),
-          //   ),
-          // ),
-          child == null
-              ? Container()
-              : Align(
-                  alignment: Alignment.center,
-                  child: child,
-                )
-        ],
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        margin: const EdgeInsets.all(1),
+        padding: EdgeInsets.all(child == null ? 8 : 0),
+        decoration: BoxDecoration(
+          color: getColor(),
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Center(
+          child: child ??
+              (iconPath != null
+                  ? Center(
+                      child: Image.asset(
+                        iconPath!,
+                        color: color,
+                      ),
+                    )
+                  : Container()),
+        ),
       ),
     );
   }
 
   Color getColor() {
     // return color.withOpacity(updating ? 1 : 0.8);
-    return AppColors.dark500.withOpacity(updating ? 1 : 0.8);
+    print(isMoving);
+    return AppColors.dark500.withOpacity(!isMoving ? 1 : 0.8);
   }
 }

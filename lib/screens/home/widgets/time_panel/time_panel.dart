@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/models/routine_model.dart';
@@ -219,6 +217,7 @@ class _TimePanelState extends State<TimePanel> {
                               draggingRoutine!.hourHeight,
                       color: draggingRoutine!.routineModel.color,
                       dragItemWidth: draggingRoutine!.hourHeight,
+                      isMoving: true,
                     ),
                   )
                 : Container(),
@@ -239,6 +238,7 @@ class _TimePanelState extends State<TimePanel> {
               panelFixedTabHeight +
               draggingRoutine!.hourHeight / 2,
           item: _dragModels.length,
+          isMoving: false,
           activityModel: ActivityModel(
               id: routine.id,
               time: const Duration(hours: 0),

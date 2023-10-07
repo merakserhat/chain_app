@@ -49,7 +49,9 @@ class DragPanelState extends State<DragPanel> {
     double maxHeight = DragItem.dragItemMaxHeight;
     double newPosition = currentPosition + draggingInfo.dy;
     double newHeight = currentHeight - draggingInfo.dy;
+    draggingInfo.dragModel.isMoving = true;
     if (!draggingInfo.continues) {
+      draggingInfo.dragModel.isMoving = false;
       newPosition = roundToNearestMultipleOfHeight(newPosition);
       newHeight = roundToNearestMultipleOfHeight(newHeight);
     }
@@ -71,7 +73,9 @@ class DragPanelState extends State<DragPanel> {
     double initialHeight = draggingInfo.dragModel.height;
     double newHeight = initialHeight + draggingInfo.dy;
     double maxHeight = DragItem.dragItemMaxHeight;
+    draggingInfo.dragModel.isMoving = true;
     if (!draggingInfo.continues) {
+      draggingInfo.dragModel.isMoving = false;
       newHeight = roundToNearestMultipleOfHeight(newHeight);
     }
 
@@ -99,8 +103,10 @@ class DragPanelState extends State<DragPanel> {
 
   void onDrag(DraggingInfo draggingInfo) {
     draggingInfo.dragModel.y += draggingInfo.dy;
+    draggingInfo.dragModel.isMoving = true;
 
     if (!draggingInfo.continues) {
+      draggingInfo.dragModel.isMoving = false;
       draggingInfo.dragModel.y =
           roundToNearestMultipleOfHeight(draggingInfo.dragModel.y).toDouble();
       if (draggingInfo.dragModel.y + draggingInfo.dragModel.height >
@@ -219,7 +225,7 @@ class DragPanelState extends State<DragPanel> {
                         onDrag: onDrag,
                         dragItemWidth: widget.hourHeight,
                         isPartial: dragModel.height < widget.hourHeight - 1,
-                        resizeHeight: max(5, dragModel.height * 0.25),
+                        resizeHeight: max(5, min(15, dragModel.height * 0.25)),
                       ),
                     ),
                   getNewDraggablePreview(),
@@ -315,6 +321,7 @@ class DragPanelState extends State<DragPanel> {
             y: yRounded,
             item: 1,
             activityModel: activityModel,
+            isMoving: false,
           );
           dragModel.fixDragModel(
               widget.panelHeight, widget.hourHeight, widget.wakeTime);

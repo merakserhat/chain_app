@@ -13,7 +13,7 @@ class TimerTexts extends StatelessWidget {
   final Duration sleepTime;
   final Duration wakeTime;
   final double panelHeight;
-  static const double timerLinePadding = 27;
+  static const double timerLinePadding = 25;
 
   @override
   Widget build(BuildContext context) {

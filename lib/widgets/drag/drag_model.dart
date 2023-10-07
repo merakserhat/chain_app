@@ -7,12 +7,14 @@ class DragModel<E> {
   double y;
   ActivityModel activityModel;
   E item;
+  bool isMoving;
 
   DragModel({
     required this.height,
     required this.y,
     required this.item,
     required this.activityModel,
+    required this.isMoving,
   });
 
   fixDragModel(double panelHeight, double hourHeight, Duration wakeTime) {

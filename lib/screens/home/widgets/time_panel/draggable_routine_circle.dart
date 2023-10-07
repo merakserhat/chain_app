@@ -26,7 +26,6 @@ class DraggableRoutineCircle extends StatelessWidget {
           ));
         },
         onTapUp: (info) {
-          print("yp");
           dragged(DraggableRoutineInfo(
             globalPos:
                 calculateCenterPos(info.globalPosition, info.localPosition),
@@ -69,7 +68,10 @@ class DraggableRoutineCircle extends StatelessWidget {
             dragging: false,
           ));
         },
-        child: RoutineCircle(hourHeight: hourHeight, routine: routine));
+        child: RoutineCircle(
+          hourHeight: hourHeight,
+          routine: routine,
+        ));
   }
 
   Offset calculateCenterPos(Offset globalPos, Offset localPos) {
