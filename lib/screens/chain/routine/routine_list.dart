@@ -17,6 +17,9 @@ class RoutineList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Program().routines.isNotEmpty) {
+      Program().routines[0].toJson();
+    }
     return Program().routines.isEmpty
         ? _getEmptyRoutine(context)
         : SingleChildScrollView(

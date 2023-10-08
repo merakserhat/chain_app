@@ -1,15 +1,16 @@
 import 'dart:ui';
 
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class RoutineModel {
-  String id;
-  Duration duration;
-  String title;
-  String iconPath;
-  Color color;
-  bool showOnPanel;
+  late String id;
+  late Duration duration;
+  late String title;
+  late String iconPath;
+  late Color color;
+  late bool showOnPanel;
 
   RoutineModel({
     required this.id,
@@ -30,5 +31,26 @@ class RoutineModel {
       color: AppColors.green,
       showOnPanel: true,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    final _data = <String, dynamic>{};
+    _data['id'] = id;
+    _data['duration'] = duration.inMinutes;
+    _data['title'] = title;
+    _data['iconPath'] = iconPath;
+    _data['color'] = color.value.toString();
+    _data['showOnPanel'] = showOnPanel;
+    return _data;
+  }
+
+  RoutineModel.fromJson(Map<String, dynamic> json) {
+    print(json);
+    id = json['id'];
+    duration = Duration(minutes: json['duration']);
+    title = json['title'];
+    iconPath = json['iconPath'];
+    color = Color(int.parse(json['color']));
+    showOnPanel = json['showOnPanel'];
   }
 }

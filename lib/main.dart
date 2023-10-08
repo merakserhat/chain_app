@@ -2,12 +2,17 @@ import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/screens/auth/auth_screen.dart';
 import 'package:chain_app/screens/home/home_screen.dart';
 import 'package:chain_app/screens/splash/splash_screen.dart';
+import 'package:chain_app/services/local_service.dart';
 import 'package:chain_app/utils/program.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  await LocalService().init();
+  Program().init();
   runApp(const MyApp());
 }
 

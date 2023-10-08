@@ -68,6 +68,8 @@ class RoutineListItem extends StatelessWidget {
                 children: [
                   Text(
                     routineModel.title,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
                     style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: isSelected ? AppColors.dark700 : Colors.white),
                   ),
