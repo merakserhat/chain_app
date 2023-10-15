@@ -1,8 +1,10 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/activity_model.dart';
+import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circle.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
+import 'package:chain_app/services/local_service.dart';
 import 'package:chain_app/utils/program.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:chain_app/widgets/drag/drag_model.dart';
@@ -11,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TimePanel extends StatefulWidget {
-  const TimePanel({Key? key}) : super(key: key);
+  const TimePanel({Key? key, required this.panelDate}) : super(key: key);
+
+  final DateTime panelDate;
 
   @override
   State<TimePanel> createState() => _TimePanelState();
@@ -28,34 +32,45 @@ class _TimePanelState extends State<TimePanel> {
   DraggableRoutineInfo? draggingRoutine;
   GlobalKey<DragPanelState> dragPanelKey = GlobalKey();
 
+  bool initialized = false;
+  bool sleepWakeChanged = false;
+
   List<DragModel<int>> _dragModels = [];
   @override
   void initState() {
     super.initState();
-    wakeTime = const Duration(hours: 8, minutes: 0);
+    wakeTime = const Duration(hours: 12, minutes: 0);
     sleepTime = const Duration(hours: 24, minutes: 0);
-    _initializePuzzlePieces();
   }
 
   void _initializePuzzlePieces() {
-    // for (int i = 0; i < 4; i++) {
-    //   double height = Random().nextDouble() * 80 + 40;
-    //   Color color = Color.fromRGBO(
-    //     Random().nextInt(256),
-    //     Random().nextInt(256),
-    //     Random().nextInt(256),
-    //     1.0,
-    //   );
-    //
-    //   _dragModels.add(
-    //     DragModel(
-    //       height: height,
-    //       item: i,
-    //       y: i * 120,
-    //       activityModel: ActivityModel.getBaseActivity(),
-    //     ),
-    //   );
-    // }
+    //TODO save daily when other things happened also
+    DailyModel? dailyModel = LocalService().loadDaily(widget.panelDate);
+    if (dailyModel != null) {
+      wakeTime = dailyModel.wakeTime;
+      sleepTime = dailyModel.sleepTime;
+      double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
+      double hourHeight = (panelHeight / timerCount) * 2;
+      for (ActivityModel activityModel in dailyModel.activities) {
+        DragModel<int> dragModel = DragModel(
+          height: 0,
+          item: 0,
+          y: 0,
+          activityModel: activityModel,
+          isMoving: false,
+        );
+        dragModel.fixDragModel(panelHeight, hourHeight, wakeTime);
+        _dragModels.add(dragModel);
+      }
+
+      setState(() {
+        sleepWakeChanged = true;
+      });
+    }
+
+    setState(() {
+      initialized = true;
+    });
   }
 
   @override
@@ -69,14 +84,19 @@ class _TimePanelState extends State<TimePanel> {
           if (currentHeight != 0) {
             currentHeight -= panelFixedTabHeight;
           }
-          if (currentHeight != panelHeight) {
+          if (currentHeight != panelHeight || sleepWakeChanged) {
             setState(() {
               panelHeight = currentHeight;
               _dragModels.forEach((element) {
                 element.fixDragModel(
                     panelHeight, (panelHeight / timerCount) * 2, wakeTime);
               });
+              sleepWakeChanged = false;
             });
+
+            if (!initialized) {
+              _initializePuzzlePieces();
+            }
           }
 
           double newStackHeightDiff = stackHeightDiff =
@@ -254,5 +274,14 @@ class _TimePanelState extends State<TimePanel> {
       dragPanelKey.currentState?.rearrangeOthers(dragModel);
       draggingRoutine = null;
     });
+
+    LocalService().saveDay(
+      DailyModel(
+        activities: _dragModels.map((e) => e.activityModel).toList(),
+        wakeTime: wakeTime,
+        sleepTime: sleepTime,
+        date: widget.panelDate,
+      ),
+    );
   }
 }

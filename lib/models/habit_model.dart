@@ -17,8 +17,8 @@ class HabitModel {
     List<String> signDurationStrings =
         List.castFrom<dynamic, String>(json['signDurations']);
     signDurations = signDurationStrings.map((e) => DateTime.parse(e)).toList();
-    startDate = json['startDate'];
-    endDate = json['endDate'];
+    startDate = DateTime.parse(json['startDate']);
+    endDate = DateTime.parse(json['endDate']);
     //TODO:
     routineModel = json['routineModels'];
   }

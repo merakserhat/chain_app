@@ -95,7 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 });
               },
               itemBuilder: (context, index) {
-                return TimePanel();
+                return TimePanel(
+                  panelDate: DateUtil.calculateCurrentDateTime(
+                      weekIndex, index - initialDayIndex),
+                );
               },
             ),
           ),
