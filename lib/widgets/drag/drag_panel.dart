@@ -18,12 +18,14 @@ class DragPanel extends StatefulWidget {
     required this.dragModels,
     required this.panelHeight,
     required this.wakeTime,
+    required this.actionCompleted,
   }) : super(key: key);
 
   final double hourHeight;
   final Duration wakeTime;
   final double panelHeight;
   final List<DragModel<int>> dragModels;
+  final VoidCallback actionCompleted;
 
   @override
   State<DragPanel> createState() => DragPanelState();
@@ -40,7 +42,6 @@ class DragPanelState extends State<DragPanel> {
   void initState() {
     super.initState();
     _dragModels = widget.dragModels;
-    print("sa");
   }
 
   void onResizeTop(DraggingInfo draggingInfo) {
@@ -54,6 +55,7 @@ class DragPanelState extends State<DragPanel> {
       draggingInfo.dragModel.isMoving = false;
       newPosition = roundToNearestMultipleOfHeight(newPosition);
       newHeight = roundToNearestMultipleOfHeight(newHeight);
+      widget.actionCompleted();
     }
     if (newHeight <= maxHeight && newHeight >= widget.hourHeight / 2) {
       draggingInfo.dragModel.height = newHeight;
@@ -77,6 +79,7 @@ class DragPanelState extends State<DragPanel> {
     if (!draggingInfo.continues) {
       draggingInfo.dragModel.isMoving = false;
       newHeight = roundToNearestMultipleOfHeight(newHeight);
+      widget.actionCompleted();
     }
 
     if (newHeight <= maxHeight && newHeight >= widget.hourHeight / 2) {
@@ -119,6 +122,7 @@ class DragPanelState extends State<DragPanel> {
       draggingInfo.dragModel.fixActivityModel(
           widget.panelHeight, widget.hourHeight, widget.wakeTime);
       rearrangeOthers(draggingInfo.dragModel);
+      widget.actionCompleted();
       return;
     }
     setState(() {});
@@ -335,6 +339,7 @@ class DragPanelState extends State<DragPanel> {
           _dragModels.add(dragModel);
           rearrangeOthers(dragModel);
           setState(() {});
+          widget.actionCompleted();
         },
       ),
     ).whenComplete(() {

@@ -2,6 +2,7 @@ import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/models/template_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circle.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
 import 'package:chain_app/services/local_service.dart';
@@ -34,17 +35,28 @@ class _TimePanelState extends State<TimePanel> {
 
   bool initialized = false;
   bool sleepWakeChanged = false;
+  bool templatesActive = true;
 
   List<DragModel<int>> _dragModels = [];
   @override
   void initState() {
     super.initState();
-    wakeTime = const Duration(hours: 12, minutes: 0);
+    wakeTime = const Duration(hours: 8, minutes: 0);
     sleepTime = const Duration(hours: 24, minutes: 0);
   }
 
+  void actionCompleted() {
+    LocalService().saveDay(
+      DailyModel(
+        activities: _dragModels.map((e) => e.activityModel).toList(),
+        wakeTime: wakeTime,
+        sleepTime: sleepTime,
+        date: widget.panelDate,
+      ),
+    );
+  }
+
   void _initializePuzzlePieces() {
-    //TODO save daily when other things happened also
     DailyModel? dailyModel = LocalService().loadDaily(widget.panelDate);
     if (dailyModel != null) {
       wakeTime = dailyModel.wakeTime;
@@ -96,6 +108,7 @@ class _TimePanelState extends State<TimePanel> {
 
             if (!initialized) {
               _initializePuzzlePieces();
+              templateStatusChanged(templatesActive, initialization: true);
             }
           }
 
@@ -182,6 +195,16 @@ class _TimePanelState extends State<TimePanel> {
                         ),
                       ),
                       const SizedBox(width: 12),
+                      GestureDetector(
+                        onTap: () => templateStatusChanged(!templatesActive),
+                        child: Icon(
+                          Icons.remove_red_eye_outlined,
+                          color: templatesActive
+                              ? AppColors.dark400
+                              : AppColors.dark500,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
                     ],
                   ),
                 ),
@@ -199,6 +222,7 @@ class _TimePanelState extends State<TimePanel> {
                         dragModels: _dragModels,
                         panelHeight: panelHeight,
                         wakeTime: wakeTime,
+                        actionCompleted: actionCompleted,
                       ),
                     ],
                   ),
@@ -275,13 +299,64 @@ class _TimePanelState extends State<TimePanel> {
       draggingRoutine = null;
     });
 
-    LocalService().saveDay(
-      DailyModel(
-        activities: _dragModels.map((e) => e.activityModel).toList(),
-        wakeTime: wakeTime,
-        sleepTime: sleepTime,
-        date: widget.panelDate,
-      ),
-    );
+    actionCompleted();
+  }
+
+  void createNewDraggableFromTemplates(TemplateModel templateModel) {
+    setState(() {
+      RoutineModel routine = templateModel.toRoutine();
+      if (templateModel.durations[widget.panelDate.weekday - 1].length == 0) {
+        print(widget.panelDate.weekday);
+        print(templateModel.durations);
+        return;
+      }
+
+      Duration duration = Duration(
+          minutes: templateModel
+                  .durations[widget.panelDate.weekday - 1][1].inMinutes -
+              templateModel
+                  .durations[widget.panelDate.weekday - 1][0].inMinutes);
+      Duration time = Duration(
+          minutes: templateModel
+              .durations[widget.panelDate.weekday - 1][0].inMinutes);
+      double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
+
+      DragModel<int> dragModel = DragModel(
+          height: 0,
+          y: 0,
+          item: _dragModels.length,
+          isMoving: false,
+          activityModel: ActivityModel(
+            id: routine.id,
+            time: time,
+            duration: duration,
+            title: routine.title,
+            iconPath: routine.iconPath,
+            color: routine.color,
+            fromTemplate: true,
+          ));
+      dragModel.fixDragModel(
+          panelHeight, (panelHeight / timerCount) * 2, wakeTime);
+      _dragModels.add(dragModel);
+      // dragPanelKey.currentState?.rearrangeOthers(dragModel);
+      draggingRoutine = null;
+    });
+  }
+
+  templateStatusChanged(bool status, {bool initialization = false}) {
+    if (!status) {
+      _dragModels.removeWhere((element) => element.activityModel.fromTemplate);
+    } else {
+      for (var template in Program().templates) {
+        createNewDraggableFromTemplates(template);
+      }
+    }
+
+    if (!initialization) {
+      setState(() {
+        templatesActive = status;
+      });
+      actionCompleted();
+    }
   }
 }

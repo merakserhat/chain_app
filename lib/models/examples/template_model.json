@@ -1,0 +1,17 @@
+{
+  "durations": [
+    [120, 60],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ],
+  "showOnPanel": true,
+  "id": "12",
+  "duration": 60,
+  "title": "Football",
+  "iconPath": "assets/images/icons/football.png",
+  "color": "123"
+}

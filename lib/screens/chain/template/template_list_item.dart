@@ -33,7 +33,7 @@ class TemplateListItem extends StatelessWidget {
             barrierColor: Colors.transparent,
             elevation: 0,
             builder: (context) => RoutineSettingsPanel(
-              routineModel: templateModel,
+              routineModel: templateModel.toRoutine(),
               objectName: "template",
               onDelete: onDelete ?? () {},
             ),

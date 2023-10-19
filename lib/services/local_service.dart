@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/models/template_model.dart';
 import 'package:hive_flutter/adapters.dart';
 
 class LocalService {
   static final LocalService _instance = LocalService._internal();
 
   late final String routineBoxName = "routines";
-  late final String habitBoxName = "habits";
+  // late final String habitBoxName = "habits";
   late final String dailyBoxName = "dailies";
+  late final String templateBoxName = "templates";
 
   factory LocalService() {
     return _instance;
@@ -18,8 +20,9 @@ class LocalService {
 
   Future init() async {
     await Hive.openBox(routineBoxName);
-    await Hive.openBox(habitBoxName);
+    // await Hive.openBox(habitBoxName);
     await Hive.openBox(dailyBoxName);
+    await Hive.openBox(templateBoxName);
   }
 
   LocalService._internal() {
@@ -86,6 +89,42 @@ class LocalService {
         json.decode(json.encode(retrievedItem)) as Map<String, dynamic>;
 
     return DailyModel.fromJson(dailyMap);
+  }
+
+  List<TemplateModel> loadTemplates() {
+    Box routineBox = Hive.box(templateBoxName);
+    List<TemplateModel> templates = [];
+
+    for (String key in routineBox.keys) {
+      final templateMap =
+          json.decode(json.encode(routineBox.get(key))) as Map<String, dynamic>;
+
+      TemplateModel templateModel = TemplateModel.fromJson(templateMap);
+      templates.add(templateModel);
+    }
+    return templates;
+  }
+
+  Future<List<TemplateModel>> saveTemplates(
+      List<TemplateModel> templates) async {
+    Box templateBox = Hive.box(templateBoxName);
+
+    // save not exists
+    for (int i = 0; i < templates.length; i++) {
+      if (!templateBox.keys.contains(templates[i].id)) {
+        await templateBox.put(templates[i].id, templates[i].toJson());
+      }
+    }
+
+    List<String> templateIds = templates.map((e) => e.id).toList();
+    List savedTemplateIds = templateBox.keys.toList();
+    for (int i = 0; i < savedTemplateIds.length; i++) {
+      if (!templateIds.contains(savedTemplateIds[i])) {
+        templateBox.delete(savedTemplateIds[i]);
+      }
+    }
+
+    return templates;
   }
   /*
     save routines

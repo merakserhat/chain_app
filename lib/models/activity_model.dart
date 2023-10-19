@@ -10,6 +10,7 @@ class ActivityModel {
   late String title;
   late String iconPath;
   late Color color;
+  late bool fromTemplate;
   late String? chainId;
   late String? habitId;
   late String? templateId;
@@ -21,6 +22,7 @@ class ActivityModel {
     required this.title,
     required this.iconPath,
     required this.color,
+    this.fromTemplate = false,
     this.chainId,
     this.habitId,
     this.templateId,
@@ -52,6 +54,7 @@ class ActivityModel {
     _data['title'] = title;
     _data['iconPath'] = iconPath;
     _data['color'] = color.value.toString();
+    _data['fromTemplate'] = fromTemplate;
     _data['chainId'] = chainId;
     _data['habitId'] = habitId;
     _data['templateId'] = templateId;
@@ -65,6 +68,7 @@ class ActivityModel {
     title = json['title'];
     iconPath = json['iconPath'];
     color = Color(int.parse(json['color']));
+    fromTemplate = json['fromTemplate'];
     chainId = json['chainId'];
     habitId = json['habitId'];
     templateId = json['templateId'];

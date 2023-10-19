@@ -25,9 +25,6 @@ class _ChainPanelState extends State<ChainPanel> {
 
   late double pageHeight;
   final double headerHeight = 60;
-
-  List<TemplateModel> templates = [];
-
   final int numPanel = 2;
 
   @override
@@ -89,7 +86,6 @@ class _ChainPanelState extends State<ChainPanel> {
             openPanelHeight: calculatePanelSize(),
             child: RoutineList(
               selectOnboardingRoutines: (onboardingRoutines) {
-                //TODO: save
                 Program().updateRoutines(
                     () => Program().routines = onboardingRoutines);
               },
@@ -115,19 +111,17 @@ class _ChainPanelState extends State<ChainPanel> {
                 builder: (context) => CreateTemplatePanel(
                   routines: Program().routines,
                   onCreate: (TemplateModel templateModel) {
-                    setState(() {
-                      templates.add(templateModel);
-                    });
+                    Program().updateTemplates(
+                        () => Program().templates.add(templateModel));
                   },
                 ),
               );
             },
             child: TemplateList(
-              templates: templates,
+              templates: Program().templates,
               deleteTemplate: (template) {
-                setState(() {
-                  templates.remove(template);
-                });
+                Program().updateTemplates(
+                    () => Program().templates.remove(template));
               },
             ),
           )
