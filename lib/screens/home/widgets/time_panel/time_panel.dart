@@ -3,6 +3,7 @@ import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/models/template_model.dart';
+import 'package:chain_app/screens/home/widgets/day_time_panel/day_time_panel.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circle.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
 import 'package:chain_app/services/local_service.dart';
@@ -143,11 +144,16 @@ class _TimePanelState extends State<TimePanel> {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(left: 50),
-                        child: SizedBox(
-                          width: (panelHeight / timerCount) * 2,
-                          child: Image.asset(
-                            "assets/images/gm.png",
-                            color: AppColors.dark500,
+                        child: GestureDetector(
+                          onTap: () {
+                            openDayTimeSettingsPanel();
+                          },
+                          child: SizedBox(
+                            width: (panelHeight / timerCount) * 2,
+                            child: Image.asset(
+                              "assets/images/gm.png",
+                              color: AppColors.dark500,
+                            ),
                           ),
                         ),
                       ),
@@ -358,5 +364,18 @@ class _TimePanelState extends State<TimePanel> {
       });
       actionCompleted();
     }
+  }
+
+  void openDayTimeSettingsPanel() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return DayTimePanel(
+          sleepTime: sleepTime,
+          wakeTime: wakeTime,
+          onUpdate: (Duration sleepTime, Duration wakeTime) {},
+        );
+      },
+    );
   }
 }

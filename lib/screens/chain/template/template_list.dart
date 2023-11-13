@@ -1,7 +1,5 @@
 import 'package:chain_app/constants/app_theme.dart';
-import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/models/template_model.dart';
-import 'package:chain_app/screens/chain/routine/routine_list_item.dart';
 import 'package:chain_app/screens/chain/template/template_list_item.dart';
 import 'package:chain_app/screens/chain/template/template_onboarding.dart';
 import 'package:chain_app/widgets/app_button.dart';

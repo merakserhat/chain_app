@@ -25,6 +25,9 @@ class DateUtil {
   }
 
   static String getDurationText(Duration duration, {bool minimize = false}) {
+    if (duration.inHours >= 24) {
+      duration = Duration(minutes: duration.inMinutes % (24 * 60));
+    }
     if (minimize) {
       if (duration.inMinutes % 60 == 0) {
         return "${duration.inHours}h";
