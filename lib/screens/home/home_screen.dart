@@ -1,3 +1,4 @@
+import 'package:chain_app/constants/app_constants.dart';
 import 'package:chain_app/screens/home/widgets/header/home_header.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/time_panel.dart';
 import 'package:chain_app/utils/date_util.dart';
@@ -15,8 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late DateTime panelDate;
   int weekIndex = 0;
   late final PageController _controller;
+  late final PageController weekController;
   bool isAnimatingPage = false;
-  final int initialDayIndex = 999;
   Duration animationDuration = Duration(milliseconds: 400);
 
   @override
@@ -24,32 +25,57 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     panelDate = DateTime.now();
     _controller = PageController(
-      initialPage: initialDayIndex,
+      initialPage: AppConstants.initialDayIndex,
+    );
+    weekController = PageController(
+      initialPage: AppConstants.initialWeekIndex,
     );
   }
 
-  void onWeekChanged(int weekIndex) {
-    Future.delayed(animationDuration, () {
-      setState(() {
-        isAnimatingPage = false;
-      });
+  void onJumpToPageFromCalender(int weekIndex, DateTime dateTime) {
+    if (DateUtil.isToday(dateTime, panelDate)) {
+      return;
+    }
+
+    setState(() {
+      this.weekIndex = weekIndex;
+      panelDate = dateTime;
+      isAnimatingPage = true;
     });
+
+    _controller
+        .animateToPage(
+          AppConstants.initialDayIndex +
+              (7 * weekIndex) +
+              (dateTime.weekday - DateTime.now().weekday),
+          duration: animationDuration,
+          curve: Curves.easeInOut,
+        )
+        .then((value) => setState(() => isAnimatingPage = false));
+    animateWeekIfNecessary();
+  }
+
+  void onWeekChanged(int weekIndex) {
+    if (isAnimatingPage) {
+      return;
+    }
     setState(() {
       this.weekIndex = weekIndex;
       isAnimatingPage = true;
       panelDate = DateTime.now().add(Duration(days: weekIndex * 7));
-      _controller.animateToPage(
-        initialDayIndex +
-            (7 * weekIndex) +
-            (panelDate.weekday - DateTime.now().weekday),
-        duration: animationDuration,
-        curve: Curves.easeInOut,
-      );
     });
+    _controller
+        .animateToPage(
+          AppConstants.initialDayIndex +
+              (7 * weekIndex) +
+              (panelDate.weekday - DateTime.now().weekday),
+          duration: animationDuration,
+          curve: Curves.easeInOut,
+        )
+        .then((value) => setState(() => isAnimatingPage = false));
   }
 
   void onDaySelected(DateTime dateTime) {
-    print("object");
     if (DateUtil.isToday(dateTime, panelDate)) {
       return;
     }
@@ -57,18 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
       panelDate = dateTime;
       isAnimatingPage = true;
     });
-    Future.delayed(animationDuration, () {
-      setState(() {
-        isAnimatingPage = false;
-      });
-    });
-    _controller.animateToPage(
-      initialDayIndex +
-          (7 * weekIndex) +
-          (dateTime.weekday - DateTime.now().weekday),
-      duration: animationDuration,
-      curve: Curves.easeInOut,
-    );
+    _controller
+        .animateToPage(
+          AppConstants.initialDayIndex +
+              (7 * weekIndex) +
+              (dateTime.weekday - DateTime.now().weekday),
+          duration: animationDuration,
+          curve: Curves.easeInOut,
+        )
+        .then((value) => setState(() {
+              isAnimatingPage = false;
+            }));
   }
 
   @override
@@ -79,8 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           HomeHeader(
             panelDate: panelDate,
+            weekController: weekController,
             onDaySelected: onDaySelected,
             onWeekChanged: onWeekChanged,
+            onJumpToPageFromCalender: onJumpToPageFromCalender,
           ),
           Expanded(
             child: PageView.builder(
@@ -89,15 +116,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (isAnimatingPage) {
                   return;
                 }
+
+                DateTime calculatedDate = DateUtil.calculateCurrentDateTime(
+                    index - AppConstants.initialDayIndex);
+
                 setState(() {
-                  panelDate = DateUtil.calculateCurrentDateTime(
-                      weekIndex, index - initialDayIndex);
+                  panelDate = calculatedDate;
                 });
+
+                animateWeekIfNecessary();
               },
               itemBuilder: (context, index) {
                 return TimePanel(
                   panelDate: DateUtil.calculateCurrentDateTime(
-                      weekIndex, index - initialDayIndex),
+                      index - AppConstants.initialDayIndex),
                 );
               },
             ),
@@ -105,5 +137,27 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     ));
+  }
+
+  animateWeekIfNecessary() {
+    int calculatedWeekIndex = DateUtil.calculateDateWeekIndex(panelDate);
+    if (calculatedWeekIndex != weekIndex) {
+      setState(() {
+        isAnimatingPage = true;
+      });
+      weekController
+          .animateToPage(
+            calculatedWeekIndex,
+            duration: animationDuration,
+            curve: Curves.easeInOut,
+          )
+          .then(
+            (value) => setState(
+              () {
+                isAnimatingPage = false;
+              },
+            ),
+          );
+    }
   }
 }

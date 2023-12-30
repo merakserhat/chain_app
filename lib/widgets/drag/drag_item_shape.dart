@@ -64,7 +64,6 @@ class DragItemShape extends StatelessWidget {
 
   Color getColor() {
     // return color.withOpacity(updating ? 1 : 0.8);
-    print(isMoving);
     return AppColors.dark500.withOpacity(!isMoving ? 1 : 0.8);
   }
 }

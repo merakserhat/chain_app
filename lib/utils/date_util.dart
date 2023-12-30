@@ -1,3 +1,4 @@
+import 'package:chain_app/constants/app_constants.dart';
 import 'package:intl/intl.dart';
 
 class DateUtil {
@@ -76,11 +77,26 @@ class DateUtil {
     return -1;
   }
 
-  static DateTime calculateCurrentDateTime(int weekIndex, int dayIndex) {
+  static DateTime calculateCurrentDateTime(int dayIndex) {
     DateTime today = DateTime.now();
     int incrementDay = dayIndex;
-    print(incrementDay);
-    return today.add(Duration(days: (7 * weekIndex) + incrementDay));
+    return today.add(Duration(days: incrementDay));
+  }
+
+  static int calculateDateWeekIndex(DateTime dateTime) {
+    DateTime today = DateTime.now();
+    DateTime firstDayOfThisWeek =
+        DateTime.now().add(Duration(days: -1 * (today.weekday - 1)));
+    DateTime firstDayOfSelectedWeek =
+        dateTime.add(Duration(days: -1 * (dateTime.weekday - 1)));
+
+    int dayDifference =
+        firstDayOfThisWeek.difference(firstDayOfSelectedWeek).inDays;
+    if (dayDifference < 0) {
+      dayDifference--;
+    }
+
+    return AppConstants.initialWeekIndex - (dayDifference ~/ 7);
   }
 
   static bool isInBetween(

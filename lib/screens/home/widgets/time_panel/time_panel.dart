@@ -39,6 +39,7 @@ class _TimePanelState extends State<TimePanel> {
   bool templatesActive = true;
 
   List<DragModel<int>> _dragModels = [];
+
   @override
   void initState() {
     super.initState();
@@ -311,9 +312,7 @@ class _TimePanelState extends State<TimePanel> {
   void createNewDraggableFromTemplates(TemplateModel templateModel) {
     setState(() {
       RoutineModel routine = templateModel.toRoutine();
-      if (templateModel.durations[widget.panelDate.weekday - 1].length == 0) {
-        print(widget.panelDate.weekday);
-        print(templateModel.durations);
+      if (templateModel.durations[widget.panelDate.weekday - 1].isEmpty) {
         return;
       }
 

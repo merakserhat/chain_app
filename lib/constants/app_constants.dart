@@ -3,4 +3,6 @@ class AppConstants {
   static String serverErrorMessage = "Something went wrong.";
 
   static String tokenKey = "token";
+  static int initialDayIndex = 7 * 54 * 6;
+  static int initialWeekIndex = 54 * 6;
 }

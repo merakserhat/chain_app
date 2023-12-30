@@ -31,7 +31,7 @@ class HeaderDay extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           AnimatedContainer(
-            duration: Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 200),
             width: 30,
             height: 30,
             decoration: BoxDecoration(

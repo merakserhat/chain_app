@@ -26,7 +26,7 @@ class RoutineSettingsPanel extends StatelessWidget {
       child: Container(
           width: double.infinity,
           height: 200,
-          margin: EdgeInsets.all(16),
+          margin: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: AppColors.dark500, width: 1),
@@ -36,7 +36,7 @@ class RoutineSettingsPanel extends StatelessWidget {
             children: [
               _getPanelHeader(context),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -135,11 +135,11 @@ class RoutineSettingsPanel extends StatelessWidget {
               const SizedBox(width: 4),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
             width: double.infinity,
             height: 1,
-            margin: EdgeInsets.symmetric(horizontal: 16),
+            margin: const EdgeInsets.symmetric(horizontal: 16),
             color: AppColors.dark500,
           )
         ],
