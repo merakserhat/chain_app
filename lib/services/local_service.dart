@@ -10,6 +10,7 @@ class LocalService {
   static final LocalService _instance = LocalService._internal();
 
   late final String routineBoxName = "routines";
+
   // late final String habitBoxName = "habits";
   late final String dailyBoxName = "dailies";
   late final String templateBoxName = "templates";
@@ -126,7 +127,7 @@ class LocalService {
 
     return templates;
   }
-  /*
+/*
     save routines
     load routines
 

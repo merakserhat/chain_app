@@ -1,4 +1,5 @@
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/screens/home/widgets/activity/activity_item.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:flutter/material.dart';
@@ -72,25 +73,9 @@ class _DragItemState extends State<DragItem> {
               color: widget.dragModel.activityModel.color,
               isMoving: widget.dragModel.isMoving,
             ),
-            const SizedBox(width: 24),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.dragModel.activityModel.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Text(
-                  "${DateUtil.getDurationText(widget.dragModel.activityModel.time)} - ${DateUtil.getDurationText(Duration(minutes: widget.dragModel.activityModel.time.inMinutes + widget.dragModel.activityModel.duration.inMinutes))} (${DateUtil.getDurationText(widget.dragModel.activityModel.duration, minimize: true)})",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall!
-                      .copyWith(fontSize: 10, color: AppColors.dark500),
-                ),
-              ],
+            ActivityItem(
+              activityModel: widget.dragModel.activityModel,
             ),
-            Expanded(child: Container()),
-            _getDoneCircle(widget.dragModel.activityModel.color, true),
           ],
         ),
       ),
@@ -112,32 +97,5 @@ class _DragItemState extends State<DragItem> {
     } else {
       widget.onDrag(draggingInfo);
     }
-  }
-
-  Widget _getDoneCircle(Color color, bool done) {
-    double size = 20;
-    return Container(
-      padding: const EdgeInsets.all(2),
-      width: size,
-      height: size,
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(100), color: color),
-      child: Container(
-          padding: EdgeInsets.all(2),
-          width: double.infinity,
-          height: double.infinity,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: AppColors.dark600),
-          child: done
-              ? Container(
-                  padding: EdgeInsets.all(2),
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100), color: color),
-                )
-              : null),
-    );
   }
 }

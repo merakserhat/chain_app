@@ -1,6 +1,7 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPanel extends StatefulWidget {
@@ -54,6 +55,25 @@ class _CalendarPanelState extends State<CalendarPanel> {
               //   ),
               // ),
               TableCalendar(
+                calendarBuilders: CalendarBuilders(
+                  dowBuilder: (context, day) {
+                    if (day.weekday == DateTime.sunday ||
+                        day.weekday == DateTime.saturday) {
+                      final text = DateFormat.E().format(day);
+
+                      return Center(
+                        child: Text(
+                          text,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
+                    return null;
+                  },
+                  outsideBuilder: (context, day, focused) {
+                    return Container();
+                  },
+                ),
                 focusedDay: _focusedDay,
                 headerStyle: const HeaderStyle(
                   titleCentered: true,
