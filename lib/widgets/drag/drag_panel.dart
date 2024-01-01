@@ -230,6 +230,9 @@ class DragPanelState extends State<DragPanel> {
                         dragItemWidth: widget.hourHeight,
                         isPartial: dragModel.height < widget.hourHeight - 1,
                         resizeHeight: max(5, min(15, dragModel.height * 0.25)),
+                        onDelete: () => onDeleteDraggable(dragModel),
+                        onStatusChanged: (status) =>
+                            onActivityStatusChanged(dragModel, status),
                       ),
                     ),
                   getNewDraggablePreview(),
@@ -349,5 +352,20 @@ class DragPanelState extends State<DragPanel> {
       });
     });
     //TODO panel
+  }
+
+  void onDeleteDraggable(DragModel dragModel) {
+    setState(() {
+      _dragModels.remove(dragModel);
+    });
+    checkOverlaps();
+    widget.actionCompleted();
+  }
+
+  void onActivityStatusChanged(DragModel dragModel, bool status) {
+    setState(() {
+      dragModel.activityModel.isDone = status;
+    });
+    widget.actionCompleted();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/screens/home/widgets/activity/activity_item.dart';
+import 'package:chain_app/screens/home/widgets/activity/activity_settings_panel.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,12 @@ class DragItem extends StatefulWidget {
     required this.dragModel,
     required this.onResizeTop,
     required this.onResizeBottom,
+    required this.onDelete,
     required this.onDrag,
     required this.dragItemWidth,
     required this.isPartial,
     required this.resizeHeight,
+    required this.onStatusChanged,
   }) : super(key: key);
 
   final double dragItemWidth;
@@ -25,6 +28,8 @@ class DragItem extends StatefulWidget {
   final Function(DraggingInfo) onResizeTop;
   final Function(DraggingInfo) onResizeBottom;
   final Function(DraggingInfo) onDrag;
+  final Function(bool) onStatusChanged;
+  final VoidCallback onDelete;
   final double resizeHeight;
   final bool isPartial;
 
@@ -50,6 +55,20 @@ class _DragItemState extends State<DragItem> {
       }
     });
     return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          // isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.transparent,
+          elevation: 0,
+          builder: (context) => ActivitySettingsPanel(
+            activityModel: widget.dragModel.activityModel,
+            onDelete: widget.onDelete,
+            onStatusChanged: widget.onStatusChanged,
+          ),
+        );
+      },
       onTapDown: (details) {
         lastTappedY = details.localPosition.dy;
         lastTappedHeight = widget.dragModel.height;
@@ -75,6 +94,7 @@ class _DragItemState extends State<DragItem> {
             ),
             ActivityItem(
               activityModel: widget.dragModel.activityModel,
+              onStatusChanged: widget.onStatusChanged,
             ),
           ],
         ),

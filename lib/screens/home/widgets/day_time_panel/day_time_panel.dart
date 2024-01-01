@@ -22,6 +22,7 @@ class DayTimePanel extends StatefulWidget {
 class _DayTimePanelState extends State<DayTimePanel> {
   RangeValues _currentRangeValues = const RangeValues(6, 34);
   final double max = 40;
+  final double min = 16;
   final Duration minDuration = const Duration(hours: 5);
   final Duration maxDuration = const Duration(hours: 27);
 
@@ -51,7 +52,6 @@ class _DayTimePanelState extends State<DayTimePanel> {
                   AppButton(
                       label: "Save",
                       onPressed: () {
-                        print(_currentRangeValues);
                         Duration wakeTime = Duration(
                             minutes: minDuration.inMinutes +
                                 _currentRangeValues.start.toInt() * 30);
@@ -61,6 +61,7 @@ class _DayTimePanelState extends State<DayTimePanel> {
                                         _currentRangeValues.end.toInt())) *
                                     30);
                         widget.onUpdate(sleepTime, wakeTime);
+                        Navigator.of(context).pop();
                       }),
                   const SizedBox(height: 32),
                 ],
@@ -117,11 +118,11 @@ class _DayTimePanelState extends State<DayTimePanel> {
       onChangeEnd: (RangeValues rangeValues) {
         double start = rangeValues.start;
         double end = rangeValues.end;
-        if (start > 12) {
-          start = 12;
+        if (start > min) {
+          start = min;
         }
-        if (end < max - 12) {
-          end = max - 12;
+        if (end < max - min) {
+          end = max - min;
         }
 
         if (start != rangeValues.start || end != rangeValues.end) {

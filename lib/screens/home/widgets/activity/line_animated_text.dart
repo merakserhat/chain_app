@@ -46,7 +46,7 @@ class _LineAnimatedTextState extends State<LineAnimatedText> {
         AnimatedContainer(
           height: 2,
           duration: duration,
-          color: AppColors.dark400,
+          color: widget.isDone ? AppColors.dark400 : AppColors.dark300,
           width: widget.isDone ? width : 0,
         )
       ],

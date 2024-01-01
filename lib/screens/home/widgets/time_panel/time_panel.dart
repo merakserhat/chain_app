@@ -218,6 +218,7 @@ class _TimePanelState extends State<TimePanel> {
                         wakeTime: wakeTime,
                         sleepTime: sleepTime,
                         panelHeight: panelHeight,
+                        hourHeight: hourHeight,
                       ),
                       DragPanel(
                         key: dragPanelKey,
@@ -375,6 +376,8 @@ class _TimePanelState extends State<TimePanel> {
             for (DragModel dragModel in _dragModels) {
               dragModel.fixDragModel(panelHeight, hourHeight, wakeTime);
             }
+
+            actionCompleted();
           },
         );
       },

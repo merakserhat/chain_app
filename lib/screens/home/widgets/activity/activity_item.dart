@@ -5,17 +5,15 @@ import 'package:chain_app/screens/home/widgets/activity/line_animated_text.dart'
 import 'package:chain_app/utils/date_util.dart';
 import 'package:flutter/material.dart';
 
-class ActivityItem extends StatefulWidget {
-  const ActivityItem({super.key, required this.activityModel});
+class ActivityItem extends StatelessWidget {
+  ActivityItem({
+    super.key,
+    required this.activityModel,
+    required this.onStatusChanged,
+  });
 
   final ActivityModel activityModel;
-
-  @override
-  State<ActivityItem> createState() => _ActivityItemState();
-}
-
-class _ActivityItemState extends State<ActivityItem> {
-  bool isDone = false;
+  final Function(bool) onStatusChanged;
   final GlobalKey animatedTextKey = GlobalKey();
 
   @override
@@ -28,13 +26,13 @@ class _ActivityItemState extends State<ActivityItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LineAnimatedText(
-                text: widget.activityModel.title,
-                isDone: isDone,
+                text: activityModel.title,
+                isDone: activityModel.isDone,
                 textKey: animatedTextKey,
                 textStyle: Theme.of(context).textTheme.titleMedium!,
               ),
               Text(
-                "${DateUtil.getDurationText(widget.activityModel.time)} - ${DateUtil.getDurationText(Duration(minutes: widget.activityModel.time.inMinutes + widget.activityModel.duration.inMinutes))} (${DateUtil.getDurationText(widget.activityModel.duration, minimize: true)})",
+                "${DateUtil.getDurationText(activityModel.time)} - ${DateUtil.getDurationText(Duration(minutes: activityModel.time.inMinutes + activityModel.duration.inMinutes))} (${DateUtil.getDurationText(activityModel.duration, minimize: true)})",
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall!
@@ -44,13 +42,9 @@ class _ActivityItemState extends State<ActivityItem> {
           ),
           const Spacer(),
           ActivityDoneCircle(
-            color: widget.activityModel.color,
-            isDone: isDone,
-            onStatusChanged: (status) {
-              setState(() {
-                isDone = status;
-              });
-            },
+            color: activityModel.color,
+            isDone: activityModel.isDone,
+            onStatusChanged: onStatusChanged,
           ),
         ],
       ),

@@ -54,6 +54,8 @@ class DragItemShape extends StatelessWidget {
                       child: Image.asset(
                         iconPath!,
                         color: color,
+                        width: 48,
+                        height: 48,
                       ),
                     )
                   : Container()),
