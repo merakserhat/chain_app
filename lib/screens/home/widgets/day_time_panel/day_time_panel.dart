@@ -20,7 +20,10 @@ class DayTimePanel extends StatefulWidget {
 }
 
 class _DayTimePanelState extends State<DayTimePanel> {
-  RangeValues _currentRangeValues = RangeValues(6, 34);
+  RangeValues _currentRangeValues = const RangeValues(6, 34);
+  final double max = 40;
+  final Duration minDuration = const Duration(hours: 5);
+  final Duration maxDuration = const Duration(hours: 27);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,6 @@ class _DayTimePanelState extends State<DayTimePanel> {
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width - 48,
-              padding: const EdgeInsets.only(bottom: 48),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 color: AppColors.dark700,
@@ -45,6 +47,22 @@ class _DayTimePanelState extends State<DayTimePanel> {
                   _getTimeSlider(),
                   const SizedBox(height: 16),
                   _getTimeLabels(),
+                  const SizedBox(height: 32),
+                  AppButton(
+                      label: "Save",
+                      onPressed: () {
+                        print(_currentRangeValues);
+                        Duration wakeTime = Duration(
+                            minutes: minDuration.inMinutes +
+                                _currentRangeValues.start.toInt() * 30);
+                        Duration sleepTime = Duration(
+                            minutes: maxDuration.inMinutes -
+                                ((max.toInt() -
+                                        _currentRangeValues.end.toInt())) *
+                                    30);
+                        widget.onUpdate(sleepTime, wakeTime);
+                      }),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
@@ -91,11 +109,6 @@ class _DayTimePanelState extends State<DayTimePanel> {
   }
 
   Widget _getTimeSlider() {
-    Duration minDuration = const Duration(hours: 5);
-    Duration maxDuration = const Duration(hours: 27);
-
-    double max = 40;
-
     return RangeSlider(
       values: _currentRangeValues,
       max: max,
@@ -133,7 +146,7 @@ class _DayTimePanelState extends State<DayTimePanel> {
     );
   }
 
-  _getTimeLabels() {
+  Widget _getTimeLabels() {
     Duration minDuration = const Duration(hours: 5);
     Duration maxDuration = const Duration(hours: 27);
     double max = 40;

@@ -38,7 +38,7 @@ class _TimePanelState extends State<TimePanel> {
   bool sleepWakeChanged = false;
   bool templatesActive = true;
 
-  List<DragModel<int>> _dragModels = [];
+  final List<DragModel<int>> _dragModels = [];
 
   @override
   void initState() {
@@ -58,13 +58,15 @@ class _TimePanelState extends State<TimePanel> {
     );
   }
 
+  double get timerCount => (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
+
+  double get hourHeight => (panelHeight / timerCount) * 2;
+
   void _initializePuzzlePieces() {
     DailyModel? dailyModel = LocalService().loadDaily(widget.panelDate);
     if (dailyModel != null) {
       wakeTime = dailyModel.wakeTime;
       sleepTime = dailyModel.sleepTime;
-      double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
-      double hourHeight = (panelHeight / timerCount) * 2;
       for (ActivityModel activityModel in dailyModel.activities) {
         DragModel<int> dragModel = DragModel(
           height: 0,
@@ -90,8 +92,6 @@ class _TimePanelState extends State<TimePanel> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
-
       WidgetsBinding.instance.addPostFrameCallback(
         (_) {
           double currentHeight = panelKey.currentContext?.size?.height ?? 0;
@@ -102,8 +102,7 @@ class _TimePanelState extends State<TimePanel> {
             setState(() {
               panelHeight = currentHeight;
               _dragModels.forEach((element) {
-                element.fixDragModel(
-                    panelHeight, (panelHeight / timerCount) * 2, wakeTime);
+                element.fixDragModel(panelHeight, hourHeight, wakeTime);
               });
               sleepWakeChanged = false;
             });
@@ -144,13 +143,13 @@ class _TimePanelState extends State<TimePanel> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 50),
+                        padding: const EdgeInsets.only(left: 50),
                         child: GestureDetector(
                           onTap: () {
                             openDayTimeSettingsPanel();
                           },
                           child: SizedBox(
-                            width: (panelHeight / timerCount) * 2,
+                            width: hourHeight,
                             child: Image.asset(
                               "assets/images/gm.png",
                               color: AppColors.dark500,
@@ -168,16 +167,13 @@ class _TimePanelState extends State<TimePanel> {
                               children: List.generate(
                                   Program().routines.length,
                                   (index) => Container(
-                                        margin:
-                                            EdgeInsets.symmetric(horizontal: 4),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 4),
                                         child: DraggableRoutineCircle(
-                                          hourHeight:
-                                              (panelHeight / timerCount) * 2,
+                                          hourHeight: hourHeight,
                                           routine: Program().routines[index],
                                           dragged: (draggableInfo) {
-                                            print(draggableInfo.dragging);
                                             if (draggableInfo.dragging) {
-                                              // print(draggableInfo.globalPos.dx);
                                               setState(() {
                                                 draggingRoutine = draggableInfo;
                                               });
@@ -225,7 +221,7 @@ class _TimePanelState extends State<TimePanel> {
                       ),
                       DragPanel(
                         key: dragPanelKey,
-                        hourHeight: (panelHeight / timerCount) * 2,
+                        hourHeight: hourHeight,
                         dragModels: _dragModels,
                         panelHeight: panelHeight,
                         wakeTime: wakeTime,
@@ -243,7 +239,7 @@ class _TimePanelState extends State<TimePanel> {
                         width: 50,
                       ),
                       SizedBox(
-                        width: (panelHeight / timerCount) * 2,
+                        width: hourHeight,
                         child: Image.asset(
                           "assets/images/gn.png",
                           color: AppColors.dark500,
@@ -324,7 +320,6 @@ class _TimePanelState extends State<TimePanel> {
       Duration time = Duration(
           minutes: templateModel
               .durations[widget.panelDate.weekday - 1][0].inMinutes);
-      double timerCount = (sleepTime.inMinutes - wakeTime.inMinutes) ~/ 30 + 1;
 
       DragModel<int> dragModel = DragModel(
           height: 0,
@@ -340,8 +335,7 @@ class _TimePanelState extends State<TimePanel> {
             color: routine.color,
             fromTemplate: true,
           ));
-      dragModel.fixDragModel(
-          panelHeight, (panelHeight / timerCount) * 2, wakeTime);
+      dragModel.fixDragModel(panelHeight, hourHeight, wakeTime);
       _dragModels.add(dragModel);
       // dragPanelKey.currentState?.rearrangeOthers(dragModel);
       draggingRoutine = null;
@@ -372,7 +366,16 @@ class _TimePanelState extends State<TimePanel> {
         return DayTimePanel(
           sleepTime: sleepTime,
           wakeTime: wakeTime,
-          onUpdate: (Duration sleepTime, Duration wakeTime) {},
+          onUpdate: (Duration sleepTime, Duration wakeTime) {
+            setState(() {
+              this.sleepTime = sleepTime;
+              this.wakeTime = wakeTime;
+            });
+
+            for (DragModel dragModel in _dragModels) {
+              dragModel.fixDragModel(panelHeight, hourHeight, wakeTime);
+            }
+          },
         );
       },
     );
