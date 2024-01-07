@@ -3,7 +3,10 @@ import 'package:chain_app/screens/home/widgets/activity/activity_item.dart';
 import 'package:chain_app/screens/home/widgets/activity/activity_settings_panel.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
+import 'package:chain_app/widgets/drag/drag_panel.dart';
+import 'package:chain_app/widgets/drag/drag_state_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'drag_model.dart';
 import 'dragging_info.dart';
@@ -12,10 +15,7 @@ class DragItem extends StatefulWidget {
   const DragItem({
     Key? key,
     required this.dragModel,
-    required this.onResizeTop,
-    required this.onResizeBottom,
     required this.onDelete,
-    required this.onDrag,
     required this.dragItemWidth,
     required this.isPartial,
     required this.resizeHeight,
@@ -24,10 +24,7 @@ class DragItem extends StatefulWidget {
 
   final double dragItemWidth;
   static double dragItemMaxHeight = 200;
-  final DragModel<int> dragModel;
-  final Function(DraggingInfo) onResizeTop;
-  final Function(DraggingInfo) onResizeBottom;
-  final Function(DraggingInfo) onDrag;
+  final DragModel dragModel;
   final Function(bool) onStatusChanged;
   final VoidCallback onDelete;
   final double resizeHeight;
@@ -102,6 +99,9 @@ class _DragItemState extends State<DragItem> {
     );
   }
 
+  DragStateModel get panelState =>
+      Provider.of<DragStateModel>(context, listen: false);
+
   void _informDragMovement(double dy, bool continues) {
     DraggingInfo draggingInfo = DraggingInfo(
       dy: dy,
@@ -111,11 +111,11 @@ class _DragItemState extends State<DragItem> {
     );
 
     if (lastTappedY < widget.resizeHeight) {
-      widget.onResizeTop(draggingInfo);
+      panelState.onResizeTop(draggingInfo);
     } else if (lastTappedY > lastTappedHeight - widget.resizeHeight) {
-      widget.onResizeBottom(draggingInfo);
+      panelState.onResizeBottom(draggingInfo);
     } else {
-      widget.onDrag(draggingInfo);
+      panelState.onDrag(draggingInfo);
     }
   }
 }

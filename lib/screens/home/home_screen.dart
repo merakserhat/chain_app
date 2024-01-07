@@ -1,9 +1,13 @@
 import 'package:chain_app/constants/app_constants.dart';
+import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/screens/home/widgets/header/home_header.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/time_panel.dart';
+import 'package:chain_app/services/local_service.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/app_screen.dart';
+import 'package:chain_app/widgets/drag/drag_state_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -18,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final PageController _controller;
   late final PageController weekController;
   bool isAnimatingPage = false;
-  Duration animationDuration = Duration(milliseconds: 400);
+  Duration animationDuration = const Duration(milliseconds: 400);
 
   @override
   void initState() {
@@ -117,8 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   return;
                 }
 
-                DateTime calculatedDate = DateUtil.calculateCurrentDateTime(
-                    index - AppConstants.initialDayIndex);
+                DateTime calculatedDate = getDateByIndex(index);
 
                 setState(() {
                   panelDate = calculatedDate;
@@ -127,10 +130,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 animateWeekIfNecessary();
               },
               itemBuilder: (context, index) {
-                return TimePanel(
-                  panelDate: DateUtil.calculateCurrentDateTime(
-                      index - AppConstants.initialDayIndex),
-                );
+                return ChangeNotifierProvider(
+                    create: (context) => DragStateModel(
+                        dailyModel: getDailyByDate(getDateByIndex(index))),
+                    child: TimePanel(
+                      panelDate: DateUtil.calculateCurrentDateTime(
+                          index - AppConstants.initialDayIndex),
+                    ));
               },
             ),
           ),
@@ -159,5 +165,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
     }
+  }
+
+  DateTime getDateByIndex(int index) {
+    return DateUtil.calculateCurrentDateTime(
+        index - AppConstants.initialDayIndex);
+  }
+
+  /// updates daily model when panelDate changed
+  DailyModel getDailyByDate(DateTime date) {
+    print("calculating for " + date.toString());
+    DailyModel? panelDaily = LocalService().loadDaily(date);
+    if (panelDaily == null) {
+      Duration wakeTime = const Duration(hours: 8, minutes: 0);
+      Duration sleepTime = const Duration(hours: 24, minutes: 0);
+      panelDaily = DailyModel(
+          activities: [], wakeTime: wakeTime, sleepTime: sleepTime, date: date);
+    }
+    return panelDaily;
   }
 }

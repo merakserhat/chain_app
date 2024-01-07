@@ -5,7 +5,9 @@ import 'package:chain_app/models/activity_model.dart';
 import 'package:chain_app/screens/task/task_create_panel.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
+import 'package:chain_app/widgets/drag/drag_state_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'drag_item.dart';
 import 'drag_model.dart';
@@ -15,84 +17,22 @@ class DragPanel extends StatefulWidget {
   const DragPanel({
     Key? key,
     required this.hourHeight,
-    required this.dragModels,
     required this.panelHeight,
     required this.wakeTime,
-    required this.actionCompleted,
   }) : super(key: key);
 
   final double hourHeight;
   final Duration wakeTime;
   final double panelHeight;
-  final List<DragModel<int>> dragModels;
-  final VoidCallback actionCompleted;
 
   @override
   State<DragPanel> createState() => DragPanelState();
 }
 
 class DragPanelState extends State<DragPanel> {
-  late List<DragModel<int>> _dragModels;
-  final List<Offset> overlaps = [];
-
-  double newDraggableStartPos = 0;
-  double newDraggableEndPos = 0;
-
   @override
   void initState() {
     super.initState();
-    _dragModels = widget.dragModels;
-  }
-
-  void onResizeTop(DraggingInfo draggingInfo) {
-    double currentPosition = draggingInfo.dragModel.y;
-    double currentHeight = draggingInfo.dragModel.height;
-    double maxHeight = DragItem.dragItemMaxHeight;
-    double newPosition = currentPosition + draggingInfo.dy;
-    double newHeight = currentHeight - draggingInfo.dy;
-    draggingInfo.dragModel.isMoving = true;
-    if (!draggingInfo.continues) {
-      draggingInfo.dragModel.isMoving = false;
-      newPosition = roundToNearestMultipleOfHeight(newPosition);
-      newHeight = roundToNearestMultipleOfHeight(newHeight);
-      widget.actionCompleted();
-    }
-    if (newHeight <= maxHeight && newHeight >= widget.hourHeight / 2) {
-      draggingInfo.dragModel.height = newHeight;
-      draggingInfo.dragModel.y = newPosition;
-
-      if (!draggingInfo.continues) {
-        draggingInfo.dragModel.fixActivityModel(
-            widget.panelHeight, widget.hourHeight, widget.wakeTime);
-        rearrangeOthers(draggingInfo.dragModel);
-        return;
-      }
-      setState(() {});
-    }
-  }
-
-  void onResizeBottom(DraggingInfo draggingInfo) {
-    double initialHeight = draggingInfo.dragModel.height;
-    double newHeight = initialHeight + draggingInfo.dy;
-    double maxHeight = DragItem.dragItemMaxHeight;
-    draggingInfo.dragModel.isMoving = true;
-    if (!draggingInfo.continues) {
-      draggingInfo.dragModel.isMoving = false;
-      newHeight = roundToNearestMultipleOfHeight(newHeight);
-      widget.actionCompleted();
-    }
-
-    if (newHeight <= maxHeight && newHeight >= widget.hourHeight / 2) {
-      draggingInfo.dragModel.height = newHeight;
-
-      if (!draggingInfo.continues) {
-        draggingInfo.dragModel.fixActivityModel(
-            widget.panelHeight, widget.hourHeight, widget.wakeTime);
-        rearrangeOthers(draggingInfo.dragModel);
-        return;
-      }
-      setState(() {});
-    }
   }
 
   double roundToNearestMultipleOfHeight(double number) {
@@ -104,99 +44,12 @@ class DragPanelState extends State<DragPanel> {
     return max(0, rounded2);
   }
 
-  void onDrag(DraggingInfo draggingInfo) {
-    draggingInfo.dragModel.y += draggingInfo.dy;
-    draggingInfo.dragModel.isMoving = true;
-
-    if (!draggingInfo.continues) {
-      draggingInfo.dragModel.isMoving = false;
-      draggingInfo.dragModel.y =
-          roundToNearestMultipleOfHeight(draggingInfo.dragModel.y).toDouble();
-      if (draggingInfo.dragModel.y + draggingInfo.dragModel.height >
-          widget.panelHeight - widget.hourHeight / 2) {
-        draggingInfo.dragModel.y = roundToNearestMultipleOfHeight(
-            widget.panelHeight -
-                draggingInfo.dragModel.height -
-                widget.hourHeight / 2);
-      }
-      draggingInfo.dragModel.fixActivityModel(
-          widget.panelHeight, widget.hourHeight, widget.wakeTime);
-      rearrangeOthers(draggingInfo.dragModel);
-      widget.actionCompleted();
-      return;
-    }
-    setState(() {});
-  }
-
-  void rearrangeOthers(DragModel mainItem) {
-    _dragModels.sort((a, b) => a.y.compareTo(b.y));
-
-    double bottomDiffHeight = 0;
-    double topDiffHeight = 0;
-
-    for (DragModel otherModel in _dragModels
-        .where((element) => element.y <= mainItem.y)
-        .toList()
-        .reversed) {
-      if (otherModel == mainItem) {
-        continue;
-      }
-      if (mainItem.y - otherModel.y < otherModel.height + bottomDiffHeight) {
-        otherModel.y = mainItem.y - otherModel.height - bottomDiffHeight;
-        bottomDiffHeight += otherModel.height;
-        if (otherModel.y < 0) {
-          otherModel.y = 0;
-        }
-        otherModel.fixActivityModel(
-            widget.panelHeight, widget.hourHeight, widget.wakeTime);
-      }
-    }
-
-    for (DragModel otherModel
-        in _dragModels.where((element) => element.y > mainItem.y).toList()) {
-      if (otherModel.y - mainItem.y < mainItem.height + topDiffHeight) {
-        otherModel.y = mainItem.y + mainItem.height + topDiffHeight;
-        topDiffHeight += otherModel.height;
-
-        if (otherModel.y + otherModel.height >
-            widget.panelHeight - widget.hourHeight / 2) {
-          otherModel.y = roundToNearestMultipleOfHeight(
-              widget.panelHeight - otherModel.height - widget.hourHeight / 2);
-        }
-        otherModel.fixActivityModel(
-            widget.panelHeight, widget.hourHeight, widget.wakeTime);
-      }
-    }
-    checkOverlaps();
-    setState(() {});
-  }
-
-  void checkOverlaps() {
-    overlaps.clear();
-    for (int i = 0; i < _dragModels.length; i++) {
-      for (int j = i + 1; j < _dragModels.length; j++) {
-        DragModel model1 = _dragModels[i];
-        DragModel model2 = _dragModels[j];
-
-        double minY = model1.y > model2.y ? model1.y : model2.y;
-        double maxY = (model1.y + model1.height) < (model2.y + model2.height)
-            ? (model1.y + model1.height)
-            : (model2.y + model2.height);
-
-        if (maxY > minY) {
-          double overlappingY = minY;
-          double overlappingHeight = maxY - minY;
-
-          if (overlappingHeight < 5) continue;
-          overlaps.add(Offset(overlappingHeight, overlappingY));
-        }
-      }
-    }
-  }
+  DragStateModel get dragState =>
+      Provider.of<DragStateModel>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
-    checkOverlaps();
+    // checkOverlaps();
     return Center(
       child: Column(
         children: [
@@ -206,54 +59,54 @@ class DragPanelState extends State<DragPanel> {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onVerticalDragStart: (info) {
-                newDraggableStartPos = info.localPosition.dy;
-                newDraggableEndPos = info.localPosition.dy;
+                dragState.updateNewDraggablePos(
+                    startPos: info.localPosition.dy);
               },
               onVerticalDragUpdate: (info) {
-                setState(() {
-                  newDraggableEndPos += info.delta.dy;
-                });
+                dragState.updateNewDraggablePos(dy: info.delta.dy);
               },
               onVerticalDragEnd: (info) {
-                handleNewDraggable();
+                dragState.handleNewDraggable(context);
               },
-              child: Stack(
-                children: [
-                  for (var dragModel in _dragModels)
-                    Positioned(
-                      left: 50,
-                      top: dragModel.y,
-                      child: DragItem(
-                        dragModel: dragModel,
-                        onResizeTop: onResizeTop,
-                        onResizeBottom: onResizeBottom,
-                        onDrag: onDrag,
-                        dragItemWidth: widget.hourHeight,
-                        isPartial: dragModel.height < widget.hourHeight - 1,
-                        resizeHeight: max(5, min(15, dragModel.height * 0.25)),
-                        onDelete: () => onDeleteDraggable(dragModel),
-                        onStatusChanged: (status) =>
-                            onActivityStatusChanged(dragModel, status),
+              child: Consumer<DragStateModel>(
+                  builder: (context, dragState, child) {
+                return Stack(
+                  children: [
+                    for (var dragModel in dragState.dragModels)
+                      Positioned(
+                        left: 50,
+                        top: dragModel.y,
+                        child: DragItem(
+                          dragModel: dragModel,
+                          dragItemWidth: widget.hourHeight,
+                          isPartial: dragModel.height < widget.hourHeight - 1,
+                          resizeHeight:
+                              max(5, min(15, dragModel.height * 0.25)),
+                          onDelete: () =>
+                              dragState.onDeleteDraggable(dragModel),
+                          onStatusChanged: (status) => dragState
+                              .onActivityStatusChanged(dragModel, status),
+                        ),
                       ),
-                    ),
-                  getNewDraggablePreview(),
-                  for (var overlap in overlaps)
-                    Positioned(
-                        top: overlap.dy - 12 + overlap.dx / 2,
-                        left: 20,
-                        child: Center(
-                          child: SizedBox(
-                              width: 50,
-                              height: 24,
-                              child: Center(
-                                child: Image.asset(
-                                  "assets/images/warning.png",
-                                  color: AppColors.secondary,
-                                ),
-                              )),
-                        ))
-                ],
-              ),
+                    getNewDraggablePreview(),
+                    for (var overlap in dragState.overlaps)
+                      Positioned(
+                          top: overlap.dy - 12 + overlap.dx / 2,
+                          left: 20,
+                          child: Center(
+                            child: SizedBox(
+                                width: 50,
+                                height: 24,
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/images/warning.png",
+                                    color: AppColors.secondary,
+                                  ),
+                                )),
+                          ))
+                  ],
+                );
+              }),
             ),
           ),
         ],
@@ -262,111 +115,45 @@ class DragPanelState extends State<DragPanel> {
   }
 
   getNewDraggablePreview() {
-    double height = min(widget.hourHeight * 6,
-        (newDraggableEndPos - newDraggableStartPos).abs());
-    double y = newDraggableStartPos < newDraggableEndPos
-        ? newDraggableStartPos
-        : newDraggableStartPos - height;
+    return Consumer<DragStateModel>(builder: (context, dragState, child) {
+      double height = min(
+          widget.hourHeight * 6,
+          (dragState.newDraggableEndPos - dragState.newDraggableStartPos)
+              .abs());
+      double y = dragState.newDraggableStartPos < dragState.newDraggableEndPos
+          ? dragState.newDraggableStartPos
+          : dragState.newDraggableStartPos - height;
 
-    double heightRounded = roundToNearestMultipleOfHeight(height);
+      double heightRounded = roundToNearestMultipleOfHeight(height);
 
-    if (heightRounded == 0 || widget.hourHeight == 0) {
-      return Container();
-    }
+      if (heightRounded == 0 || widget.hourHeight == 0) {
+        return Container();
+      }
 
-    Duration prevDuration =
-        Duration(minutes: heightRounded ~/ (widget.hourHeight / 2) * 30);
+      Duration prevDuration =
+          Duration(minutes: heightRounded ~/ (widget.hourHeight / 2) * 30);
 
-    return Positioned(
-      top: y,
-      left: 50,
-      child: DragItemShape(
-        isPartial: height < widget.hourHeight - 1,
-        height: height,
-        dragItemWidth: widget.hourHeight,
-        color: AppColors.dark500,
-        child: Text(
-          DateUtil.getDurationText(
-            prevDuration,
-            minimize: true,
+      return Positioned(
+        top: y,
+        left: 50,
+        child: DragItemShape(
+          isPartial: height < widget.hourHeight - 1,
+          height: height,
+          dragItemWidth: widget.hourHeight,
+          color: AppColors.dark500,
+          child: Text(
+            DateUtil.getDurationText(
+              prevDuration,
+              minimize: true,
+            ),
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(fontWeight: FontWeight.w500),
           ),
-          textAlign: TextAlign.center,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.w500),
         ),
-      ),
-    );
-  }
-
-  void handleNewDraggable() {
-    double height = min(widget.hourHeight * 6,
-        (newDraggableEndPos - newDraggableStartPos).abs());
-    double y = newDraggableStartPos < newDraggableEndPos
-        ? newDraggableStartPos
-        : newDraggableStartPos - height;
-    double heightRounded = roundToNearestMultipleOfHeight(height);
-    double yRounded = roundToNearestMultipleOfHeight(y);
-    if (heightRounded == 0) {
-      return;
-    }
-
-    Duration activityTime = DragModel.findActivityTime(
-        yRounded, widget.panelHeight, widget.hourHeight, widget.wakeTime);
-    Duration activityDuration = DragModel.findActivityDuration(
-        heightRounded, widget.panelHeight, widget.hourHeight, widget.wakeTime);
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => TaskCreatePanel(
-        initialTime: activityTime,
-        initialDuration: activityDuration,
-        onCreate: (ActivityModel activityModel) {
-          DragModel<int> dragModel = DragModel(
-            height: heightRounded,
-            y: yRounded,
-            item: 1,
-            activityModel: activityModel,
-            isMoving: false,
-          );
-          dragModel.fixDragModel(
-              widget.panelHeight, widget.hourHeight, widget.wakeTime);
-          onDrag(
-            DraggingInfo(
-                dy: 0,
-                continues: false,
-                lastTappedY: dragModel.y,
-                dragModel: dragModel),
-          );
-          _dragModels.add(dragModel);
-          rearrangeOthers(dragModel);
-          setState(() {});
-          widget.actionCompleted();
-        },
-      ),
-    ).whenComplete(() {
-      setState(() {
-        newDraggableEndPos = 0;
-        newDraggableStartPos = 0;
-      });
+      );
     });
-    //TODO panel
-  }
-
-  void onDeleteDraggable(DragModel dragModel) {
-    setState(() {
-      _dragModels.remove(dragModel);
-    });
-    checkOverlaps();
-    widget.actionCompleted();
-  }
-
-  void onActivityStatusChanged(DragModel dragModel, bool status) {
-    setState(() {
-      dragModel.activityModel.isDone = status;
-    });
-    widget.actionCompleted();
   }
 }

@@ -1,4 +1,6 @@
 import 'package:chain_app/models/activity_model.dart';
+import 'package:chain_app/services/local_service.dart';
+import 'package:flutter/cupertino.dart';
 
 class DailyModel {
   late String id;
