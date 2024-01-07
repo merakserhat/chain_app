@@ -25,11 +25,25 @@ class ActivityItem extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              LineAnimatedText(
-                text: activityModel.title,
-                isDone: activityModel.isDone,
-                textKey: animatedTextKey,
-                textStyle: Theme.of(context).textTheme.titleMedium!,
+              Row(
+                children: [
+                  LineAnimatedText(
+                    text: activityModel.title,
+                    isDone: activityModel.isDone,
+                    textKey: animatedTextKey,
+                    textStyle: Theme.of(context).textTheme.titleMedium!,
+                  ),
+                  activityModel.fromTemplate
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Icon(
+                            Icons.lock_clock,
+                            color: AppColors.dark400,
+                            size: 16,
+                          ),
+                        )
+                      : Container()
+                ],
               ),
               Text(
                 "${DateUtil.getDurationText(activityModel.time)} - ${DateUtil.getDurationText(Duration(minutes: activityModel.time.inMinutes + activityModel.duration.inMinutes))} (${DateUtil.getDurationText(activityModel.duration, minimize: true)})",

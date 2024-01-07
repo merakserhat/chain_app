@@ -42,7 +42,7 @@ class DragItemShape extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         margin: const EdgeInsets.all(1),
-        padding: EdgeInsets.all(child == null ? 8 : 0),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: getColor(),
           borderRadius: BorderRadius.circular(100),

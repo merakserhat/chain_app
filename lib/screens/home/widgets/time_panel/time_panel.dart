@@ -123,6 +123,7 @@ class _TimePanelState extends State<TimePanel> {
           }
         },
       );
+
       return Container(
         key: panelKey,
         width: double.infinity,
@@ -214,12 +215,14 @@ class _TimePanelState extends State<TimePanel> {
                 Expanded(
                   child: Stack(
                     children: [
-                      TimerTexts(
-                        wakeTime: wakeTime,
-                        sleepTime: sleepTime,
-                        panelHeight: panelHeight,
-                        hourHeight: hourHeight,
-                      ),
+                      hourHeight != 0
+                          ? TimerTexts(
+                              wakeTime: wakeTime,
+                              sleepTime: sleepTime,
+                              panelHeight: panelHeight,
+                              hourHeight: hourHeight,
+                            )
+                          : Container(),
                       DragPanel(
                         key: dragPanelKey,
                         hourHeight: hourHeight,
@@ -313,6 +316,13 @@ class _TimePanelState extends State<TimePanel> {
         return;
       }
 
+      if (_dragModels
+          .map((e) => e.activityModel)
+          .toList()
+          .any((activity) => activity.templateId == templateModel.id)) {
+        return;
+      }
+
       Duration duration = Duration(
           minutes: templateModel
                   .durations[widget.panelDate.weekday - 1][1].inMinutes -
@@ -335,6 +345,7 @@ class _TimePanelState extends State<TimePanel> {
             iconPath: routine.iconPath,
             color: routine.color,
             fromTemplate: true,
+            templateId: templateModel.id,
           ));
       dragModel.fixDragModel(panelHeight, hourHeight, wakeTime);
       _dragModels.add(dragModel);

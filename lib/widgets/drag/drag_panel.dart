@@ -196,6 +196,7 @@ class DragPanelState extends State<DragPanel> {
 
   @override
   Widget build(BuildContext context) {
+    checkOverlaps();
     return Center(
       child: Column(
         children: [

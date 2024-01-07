@@ -20,11 +20,20 @@ class DayTimePanel extends StatefulWidget {
 }
 
 class _DayTimePanelState extends State<DayTimePanel> {
-  RangeValues _currentRangeValues = const RangeValues(6, 34);
+  late RangeValues _currentRangeValues;
   final double max = 40;
   final double min = 16;
   final Duration minDuration = const Duration(hours: 5);
   final Duration maxDuration = const Duration(hours: 27);
+
+  @override
+  void initState() {
+    super.initState();
+
+    _currentRangeValues = RangeValues(
+        (widget.wakeTime.inMinutes - minDuration.inMinutes) / 30,
+        max - (maxDuration.inMinutes - widget.sleepTime.inMinutes) / 30);
+  }
 
   @override
   Widget build(BuildContext context) {
