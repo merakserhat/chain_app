@@ -1,8 +1,7 @@
+import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/screens/task/widgets/task_create_base_item.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:flutter/material.dart';
-
-import '../../../constants/app_theme.dart';
 
 class TaskDurationPicker extends StatelessWidget {
   const TaskDurationPicker(
@@ -29,7 +28,7 @@ class TaskDurationPicker extends StatelessWidget {
             selectedDuration, constraints.maxWidth, true);
         return Container(
           height: 100,
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8), color: AppColors.dark600),
           child: Stack(
