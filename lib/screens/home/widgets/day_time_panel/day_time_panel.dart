@@ -1,6 +1,8 @@
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/services/local_service.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/app_button.dart';
+import 'package:chain_app/widgets/custom_checkbox.dart';
 import 'package:flutter/material.dart';
 
 class DayTimePanel extends StatefulWidget {
@@ -25,6 +27,8 @@ class _DayTimePanelState extends State<DayTimePanel> {
   final double min = 16;
   final Duration minDuration = const Duration(hours: 5);
   final Duration maxDuration = const Duration(hours: 27);
+  late List<Duration> defaultDayTimeDurations;
+  bool isDefault = false;
 
   @override
   void initState() {
@@ -33,6 +37,9 @@ class _DayTimePanelState extends State<DayTimePanel> {
     _currentRangeValues = RangeValues(
         (widget.wakeTime.inMinutes - minDuration.inMinutes) / 30,
         max - (maxDuration.inMinutes - widget.sleepTime.inMinutes) / 30);
+
+    defaultDayTimeDurations = LocalService().loadDayTime();
+    calculateDefaultOption();
   }
 
   @override
@@ -57,6 +64,21 @@ class _DayTimePanelState extends State<DayTimePanel> {
                   _getTimeSlider(),
                   const SizedBox(height: 16),
                   _getTimeLabels(),
+                  const SizedBox(height: 16),
+                  CustomCheckbox(
+                    text: "Save as a default.",
+                    change: (isDefault) {
+                      if (isDefault == null) {
+                        return;
+                      }
+
+                      setState(() {
+                        this.isDefault = isDefault;
+                      });
+                    },
+                    isChecked: isDefault,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(height: 32),
                   AppButton(
                       label: "Save",
@@ -69,6 +91,9 @@ class _DayTimePanelState extends State<DayTimePanel> {
                                 ((max.toInt() -
                                         _currentRangeValues.end.toInt())) *
                                     30);
+                        if (isDefault) {
+                          LocalService().saveDayTime(wakeTime, sleepTime);
+                        }
                         widget.onUpdate(sleepTime, wakeTime);
                         Navigator.of(context).pop();
                       }),
@@ -149,6 +174,7 @@ class _DayTimePanelState extends State<DayTimePanel> {
                 (max.round() - _currentRangeValues.end.round()) * 30))),
       ),
       onChanged: (RangeValues values) {
+        calculateDefaultOption();
         setState(() {
           _currentRangeValues = values;
         });
@@ -187,7 +213,7 @@ class _DayTimePanelState extends State<DayTimePanel> {
                         _currentRangeValues.start.round() * 30)),
                 style: labelStyle.copyWith(color: AppColors.primary),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 DateUtil.getDurationText(Duration(
                     minutes: maxDuration.inMinutes -
@@ -197,5 +223,11 @@ class _DayTimePanelState extends State<DayTimePanel> {
             ]),
           ],
         ));
+  }
+
+  void calculateDefaultOption() {
+    isDefault =
+        widget.wakeTime.inMinutes == defaultDayTimeDurations[0].inMinutes &&
+            widget.sleepTime.inMinutes == defaultDayTimeDurations[1].inMinutes;
   }
 }

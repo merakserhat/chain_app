@@ -177,8 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
     print("calculating for " + date.toString());
     DailyModel? panelDaily = LocalService().loadDaily(date);
     if (panelDaily == null) {
-      Duration wakeTime = const Duration(hours: 8, minutes: 0);
-      Duration sleepTime = const Duration(hours: 24, minutes: 0);
+      List<Duration> dayTimeList = LocalService().loadDayTime();
+      Duration wakeTime = dayTimeList[0];
+      Duration sleepTime = dayTimeList[1];
       panelDaily = DailyModel(
           activities: [], wakeTime: wakeTime, sleepTime: sleepTime, date: date);
     }

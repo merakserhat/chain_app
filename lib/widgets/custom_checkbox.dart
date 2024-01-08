@@ -1,16 +1,18 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 
-class RoutineShowCheckbox extends StatelessWidget {
+class CustomCheckbox extends StatelessWidget {
   final Function(bool?) change;
   final bool isChecked;
   final Color color;
+  final String text;
 
-  const RoutineShowCheckbox({
+  const CustomCheckbox({
     super.key,
     required this.change,
     required this.isChecked,
     required this.color,
+    required this.text,
   });
 
   @override
@@ -30,7 +32,7 @@ class RoutineShowCheckbox extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    "Show on panel?",
+                    text,
                     softWrap: true,
                     style: Theme.of(context)
                         .textTheme
@@ -44,8 +46,15 @@ class RoutineShowCheckbox extends StatelessWidget {
                   child: Checkbox(
                     value: isChecked,
                     onChanged: change,
-                    checkColor: Colors.white,
                     activeColor: color,
+                    side: MaterialStateBorderSide.resolveWith(
+                      (states) => BorderSide(
+                          width: 1.0,
+                          color: isChecked
+                              ? Colors.transparent
+                              : AppColors.dark400),
+                    ),
+                    checkColor: Colors.white,
                   ),
                 ),
               ],

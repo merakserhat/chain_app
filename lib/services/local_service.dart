@@ -14,6 +14,7 @@ class LocalService {
   // late final String habitBoxName = "habits";
   late final String dailyBoxName = "dailies";
   late final String templateBoxName = "templates";
+  late final String defaultsBoxName = "defaults";
 
   factory LocalService() {
     return _instance;
@@ -24,6 +25,7 @@ class LocalService {
     // await Hive.openBox(habitBoxName);
     await Hive.openBox(dailyBoxName);
     await Hive.openBox(templateBoxName);
+    await Hive.openBox(defaultsBoxName);
   }
 
   LocalService._internal() {
@@ -126,6 +128,27 @@ class LocalService {
     }
 
     return templates;
+  }
+
+  Future<bool> saveDayTime(Duration wakeTime, Duration sleepTime) async {
+    Box dailyBox = Hive.box(defaultsBoxName);
+
+    await dailyBox.put("wake", wakeTime.inMinutes);
+    await dailyBox.put("sleep", sleepTime.inMinutes);
+
+    return true;
+  }
+
+  List<Duration> loadDayTime() {
+    Box dailyBox = Hive.box(defaultsBoxName);
+
+    int wakeInMinutes = dailyBox.get("wake") ?? 8 * 60;
+    int sleepInMinutes = dailyBox.get("sleep") ?? 24 * 60;
+
+    Duration wakeTime = Duration(minutes: wakeInMinutes);
+    Duration sleepTime = Duration(minutes: sleepInMinutes);
+
+    return [wakeTime, sleepTime];
   }
 /*
     save routines

@@ -1,6 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
-import 'package:chain_app/screens/chain/routine/routine_show_checkbox.dart';
+import 'package:chain_app/widgets/custom_checkbox.dart';
 import 'package:chain_app/screens/task/widgets/task_color_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_duration_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_icon.dart';
@@ -90,17 +90,19 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
                       },
                     ),
                     const SizedBox(height: 32),
-                    RoutineShowCheckbox(
-                        change: (isShow) {
-                          if (isShow == null) {
-                            return;
-                          }
-                          setState(() {
-                            this.isShow = isShow;
-                          });
-                        },
-                        isChecked: isShow,
-                        color: selectedColor),
+                    CustomCheckbox(
+                      text: "Show on panel?",
+                      change: (isShow) {
+                        if (isShow == null) {
+                          return;
+                        }
+                        setState(() {
+                          this.isShow = isShow;
+                        });
+                      },
+                      isChecked: isShow,
+                      color: selectedColor,
+                    ),
                   ],
                 ),
               ),
