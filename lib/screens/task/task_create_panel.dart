@@ -1,9 +1,11 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/activity_model.dart';
+import 'package:chain_app/models/reminder_model.dart';
 import 'package:chain_app/screens/task/widgets/task_color_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_duration_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_icon.dart';
 import 'package:chain_app/screens/task/widgets/task_name_input_field.dart';
+import 'package:chain_app/screens/task/widgets/task_reminder_picker.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -13,12 +15,16 @@ class TaskCreatePanel extends StatefulWidget {
     Key? key,
     required this.initialDuration,
     required this.initialTime,
-    required this.onCreate,
+    this.onCreate,
+    this.onEdit,
+    this.editedActivity,
   }) : super(key: key);
 
   final Duration initialDuration;
   final Duration initialTime;
-  final Function(ActivityModel activityModel) onCreate;
+  final ActivityModel? editedActivity;
+  final Function(ActivityModel activityModel)? onCreate;
+  final Function(ActivityModel activityModel)? onEdit;
 
   @override
   State<TaskCreatePanel> createState() => _TaskCreatePanelState();
@@ -29,14 +35,19 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
   late TextEditingController taskNameController;
   late Color selectedColor;
   late Duration selectedDuration;
+  late List<ReminderModel> selectedReminders;
 
   @override
   void initState() {
     super.initState();
-    selectedTaskIcon = TaskIconData.getFavTaskIcons(1).first;
-    taskNameController = TextEditingController(text: selectedTaskIcon.name);
-    selectedColor = AppColors.primary;
+    selectedTaskIcon =
+        TaskIconData.getTaskIconWithPath(widget.editedActivity?.iconPath) ??
+            TaskIconData.getFavTaskIcons(1).first;
+    taskNameController = TextEditingController(
+        text: widget.editedActivity?.title ?? selectedTaskIcon.name);
+    selectedColor = widget.editedActivity?.color ?? AppColors.primary;
     selectedDuration = widget.initialDuration;
+    selectedReminders = widget.editedActivity?.reminders ?? [];
   }
 
   @override
@@ -89,6 +100,27 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
                         });
                       },
                     ),
+                    const SizedBox(height: 32),
+                    TaskReminderPicker(
+                      selectedColor: selectedColor,
+                      selectedReminders: selectedReminders,
+                      onReminderStateChanged: (reminderModel, isSelected) {
+                        if (isSelected &&
+                            !selectedReminders.contains(reminderModel)) {
+                          setState(() {
+                            selectedReminders.add(reminderModel);
+                          });
+                          return;
+                        }
+
+                        if (!isSelected &&
+                            selectedReminders.contains(reminderModel)) {
+                          setState(() {
+                            selectedReminders.remove(reminderModel);
+                          });
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -96,17 +128,20 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(24.0),
                 child: SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    label: "Create Task",
+                    label: widget.onEdit == null
+                        ? "Create Activity"
+                        : "Edit Activity",
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
                     color: selectedColor,
-                    customPadding: EdgeInsets.symmetric(vertical: 12),
+                    customPadding: const EdgeInsets.symmetric(vertical: 12),
                     onPressed: () {
-                      String id = const Uuid().v1();
+                      String id =
+                          widget.editedActivity?.id ?? const Uuid().v1();
                       ActivityModel activityModel = ActivityModel(
                         id: id,
                         time: widget.initialTime,
@@ -114,8 +149,11 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
                         title: taskNameController.text,
                         iconPath: selectedTaskIcon.src,
                         color: selectedColor,
+                        reminders: selectedReminders,
                       );
-                      widget.onCreate(activityModel);
+                      widget.onCreate != null
+                          ? widget.onCreate!(activityModel)
+                          : widget.onEdit!(activityModel);
                       Navigator.of(context).pop();
                     },
                   ),
@@ -141,11 +179,11 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
         children: [
           const SizedBox(width: 16),
           Text(
-            "Create ",
+            widget.editedActivity == null ? "Create " : "Edit ",
             style: Theme.of(context).textTheme.titleLarge,
           ),
           Text(
-            "Task",
+            "Activity",
             style: Theme.of(context)
                 .textTheme
                 .titleLarge!

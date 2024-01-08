@@ -58,9 +58,13 @@ class DragPanelState extends State<DragPanel> {
           Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onVerticalDragStart: (info) {
+              onTapDown: (info) {
                 dragState.updateNewDraggablePos(
                     startPos: info.localPosition.dy);
+              },
+              onVerticalDragStart: (info) {
+                dragState.updateNewDraggablePos(
+                    updatedPos: info.localPosition.dy);
               },
               onVerticalDragUpdate: (info) {
                 dragState.updateNewDraggablePos(dy: info.delta.dy);
@@ -84,6 +88,8 @@ class DragPanelState extends State<DragPanel> {
                               max(5, min(15, dragModel.height * 0.25)),
                           onDelete: () =>
                               dragState.onDeleteDraggable(dragModel),
+                          onEdit: () => dragState.handleEditActivity(
+                              context, dragModel.activityModel),
                           onStatusChanged: (status) => dragState
                               .onActivityStatusChanged(dragModel, status),
                         ),

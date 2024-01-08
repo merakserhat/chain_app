@@ -24,13 +24,33 @@ final class TaskIconData extends Equatable {
   static const TaskIconData school =
       TaskIconData("assets/images/chain.png", "School");
 
+  static List<TaskIconData> taskIcons = [
+    sports,
+    study,
+    meal,
+    football,
+    kitchen,
+    read,
+    film,
+    coffee,
+    school
+  ];
+
   static List<TaskIconData> getFavTaskIcons(int size) {
-    return [sports, study, meal, football, kitchen, read, film, coffee, school]
-        .sublist(0, size);
+    return taskIcons.sublist(0, size);
+  }
+
+  static TaskIconData? getTaskIconWithPath(String? path) {
+    try {
+      return taskIcons.firstWhere((element) => element.src == path);
+    } catch (_) {
+      return null;
+    }
   }
 
   final String src;
   final String name;
+
   const TaskIconData(this.src, this.name);
 
   @override

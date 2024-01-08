@@ -7,16 +7,18 @@ import 'package:chain_app/widgets/square_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class ActivitySettingsPanel extends StatefulWidget {
-  const ActivitySettingsPanel(
-      {Key? key,
-      required this.activityModel,
-      required this.onDelete,
-      required this.onStatusChanged})
-      : super(key: key);
+  const ActivitySettingsPanel({
+    Key? key,
+    required this.activityModel,
+    required this.onDelete,
+    required this.onStatusChanged,
+    required this.onEdit,
+  }) : super(key: key);
 
   final ActivityModel activityModel;
   final VoidCallback onDelete;
   final Function(bool) onStatusChanged;
+  final VoidCallback onEdit;
 
   @override
   State<ActivitySettingsPanel> createState() => _ActivitySettingsPanelState();
@@ -67,12 +69,11 @@ class _ActivitySettingsPanelState extends State<ActivitySettingsPanel> {
                         }),
                     const SizedBox(width: 8),
                     SquareIconButton(
-                        icon: Icons.edit,
-                        label: "Edit",
-                        color: widget.activityModel.color,
-                        onTap: () {
-                          //TODO: edit
-                        }),
+                      icon: Icons.edit,
+                      label: "Edit",
+                      color: widget.activityModel.color,
+                      onTap: widget.onEdit,
+                    ),
                   ],
                 ),
               ),

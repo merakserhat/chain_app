@@ -3,12 +3,12 @@ import 'package:chain_app/screens/task/widgets/task_icon.dart';
 import 'package:flutter/material.dart';
 
 class TaskNameInput extends StatefulWidget {
-  const TaskNameInput(
-      {Key? key,
-      required this.taskIconData,
-      required this.taskNameController,
-      required this.selectedColor})
-      : super(key: key);
+  const TaskNameInput({
+    Key? key,
+    required this.taskIconData,
+    required this.taskNameController,
+    required this.selectedColor,
+  }) : super(key: key);
   final TaskIconData taskIconData;
   final TextEditingController taskNameController;
   final Color selectedColor;

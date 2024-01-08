@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:chain_app/constants/app_theme.dart';
+import 'package:chain_app/models/reminder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -11,6 +12,7 @@ class RoutineModel {
   late String iconPath;
   late Color color;
   late bool showOnPanel;
+  late List<ReminderModel> reminders;
 
   RoutineModel({
     required this.id,
@@ -19,6 +21,7 @@ class RoutineModel {
     required this.iconPath,
     required this.color,
     required this.showOnPanel,
+    required this.reminders,
   });
 
   static RoutineModel getBaseRoutine() {
@@ -30,27 +33,31 @@ class RoutineModel {
       iconPath: "assets/images/icons/football.png",
       color: AppColors.green,
       showOnPanel: true,
+      reminders: [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['duration'] = duration.inMinutes;
-    _data['title'] = title;
-    _data['iconPath'] = iconPath;
-    _data['color'] = color.value.toString();
-    _data['showOnPanel'] = showOnPanel;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['duration'] = duration.inMinutes;
+    data['title'] = title;
+    data['iconPath'] = iconPath;
+    data['color'] = color.value.toString();
+    data['showOnPanel'] = showOnPanel;
+    data['reminders'] = reminders.map((e) => e.toJson());
+    return data;
   }
 
   RoutineModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     id = json['id'];
     duration = Duration(minutes: json['duration']);
     title = json['title'];
     iconPath = json['iconPath'];
     color = Color(int.parse(json['color']));
     showOnPanel = json['showOnPanel'];
+    reminders = List.from(json["reminders"])
+        .map((e) => ReminderModel.fromJson(e))
+        .toList();
   }
 }

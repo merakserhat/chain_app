@@ -128,6 +128,7 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
                         title: taskNameController.text,
                         iconPath: selectedTaskIcon.src,
                         color: selectedColor,
+                        reminders: [],
                       );
                       widget.onCreate(routineModel);
                       Navigator.of(context).pop();

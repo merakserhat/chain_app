@@ -15,11 +15,12 @@ class DragItem extends StatefulWidget {
   const DragItem({
     Key? key,
     required this.dragModel,
-    required this.onDelete,
     required this.dragItemWidth,
     required this.isPartial,
     required this.resizeHeight,
     required this.onStatusChanged,
+    required this.onDelete,
+    required this.onEdit,
   }) : super(key: key);
 
   final double dragItemWidth;
@@ -27,6 +28,7 @@ class DragItem extends StatefulWidget {
   final DragModel dragModel;
   final Function(bool) onStatusChanged;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
   final double resizeHeight;
   final bool isPartial;
 
@@ -63,6 +65,7 @@ class _DragItemState extends State<DragItem> {
             activityModel: widget.dragModel.activityModel,
             onDelete: widget.onDelete,
             onStatusChanged: widget.onStatusChanged,
+            onEdit: widget.onEdit,
           ),
         );
       },

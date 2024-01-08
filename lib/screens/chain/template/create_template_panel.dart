@@ -16,6 +16,7 @@ class CreateTemplatePanel extends StatefulWidget {
 
   final Function(TemplateModel) onCreate;
   final List<RoutineModel> routines;
+
   @override
   State<CreateTemplatePanel> createState() => _TaskCreatePanelState();
 }
@@ -100,6 +101,7 @@ class _TaskCreatePanelState extends State<CreateTemplatePanel> {
                         iconPath: selectedRoutine!.iconPath,
                         color: selectedRoutine!.color,
                         showOnPanel: selectedRoutine!.showOnPanel,
+                        reminders: [],
                       );
 
                       widget.onCreate(templateModel);

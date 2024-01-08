@@ -35,6 +35,7 @@ class LocalService {
   ///Gets routines as a list
   List<RoutineModel> loadRoutines() {
     Box routineBox = Hive.box("routines");
+    routineBox.clear();
     List<RoutineModel> routines = [];
 
     for (String key in routineBox.keys) {
@@ -78,7 +79,7 @@ class LocalService {
 
   DailyModel? loadDaily(DateTime dateTime) {
     Box dailyBox = Hive.box("dailies");
-    // dailyBox.clear();
+    dailyBox.clear();
     String id = DailyModel.produceDailyId(dateTime);
 
     var retrievedItem = dailyBox.get(id);
@@ -95,12 +96,13 @@ class LocalService {
   }
 
   List<TemplateModel> loadTemplates() {
-    Box routineBox = Hive.box(templateBoxName);
+    Box templateBox = Hive.box(templateBoxName);
+    templateBox.clear();
     List<TemplateModel> templates = [];
 
-    for (String key in routineBox.keys) {
-      final templateMap =
-          json.decode(json.encode(routineBox.get(key))) as Map<String, dynamic>;
+    for (String key in templateBox.keys) {
+      final templateMap = json.decode(json.encode(templateBox.get(key)))
+          as Map<String, dynamic>;
 
       TemplateModel templateModel = TemplateModel.fromJson(templateMap);
       templates.add(templateModel);

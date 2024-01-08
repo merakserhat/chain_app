@@ -260,6 +260,7 @@ class DragStateModel extends ChangeNotifier {
           color: routine.color,
           fromTemplate: true,
           templateId: templateModel.id,
+          reminders: [],
         ));
     dragModel.fixDragModel(panelHeight, hourHeight, dailyModel.wakeTime);
     dragModels.add(dragModel);
@@ -273,18 +274,25 @@ class DragStateModel extends ChangeNotifier {
     }
   }
 
-  void updateNewDraggablePos({double? startPos, double? dy}) {
-    assert(!(startPos == null && dy == null), "Both pos and dy is empty");
+  void updateNewDraggablePos(
+      {double? startPos, double? dy, double? updatedPos}) {
+    assert(!(startPos == null && dy == null && updatedPos == null),
+        "Both pos and dy is empty");
 
-    if (startPos == null) {
-      newDraggableEndPos += dy!;
+    if (startPos != null) {
+      newDraggableStartPos = startPos;
+      newDraggableEndPos = startPos;
+      notifyListeners();
+      return;
+    } else if (updatedPos != null) {
+      newDraggableEndPos = updatedPos;
       notifyListeners();
       return;
     }
 
-    newDraggableStartPos = startPos;
-    newDraggableEndPos = startPos;
+    newDraggableEndPos += dy!;
     notifyListeners();
+    return;
   }
 
   void handleNewDraggable(BuildContext context) {
@@ -355,7 +363,8 @@ class DragStateModel extends ChangeNotifier {
             duration: routine.duration,
             title: routine.title,
             iconPath: routine.iconPath,
-            color: routine.color));
+            color: routine.color,
+            reminders: []));
     dragModel.fixActivityModel(
         panelHeight, draggingRoutine!.hourHeight, dailyModel.wakeTime);
     dragModel.fixDragModel(
@@ -425,5 +434,30 @@ class DragStateModel extends ChangeNotifier {
     dailyModel.activities
         .addAll(dragModels.map((e) => e.activityModel).toList());
     LocalService().saveDay(dailyModel);
+  }
+
+  void handleEditActivity(BuildContext context, ActivityModel activityModel) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => TaskCreatePanel(
+        initialTime: activityModel.time,
+        initialDuration: activityModel.duration,
+        editedActivity: activityModel,
+        onEdit: (ActivityModel activityModel) {
+          DragModel dragModel = dragModels
+              .firstWhere((drag) => drag.activityModel.id == activityModel.id);
+          dragModel.activityModel = activityModel;
+          dragModel.fixDragModel(panelHeight, hourHeight, dailyModel.wakeTime);
+          rearrangeOthers(dragModel);
+          save();
+          notifyListeners();
+        },
+      ),
+    ).whenComplete(() {
+      newDraggableEndPos = 0;
+      newDraggableStartPos = 0;
+      notifyListeners();
+    });
   }
 }

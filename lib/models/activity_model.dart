@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:chain_app/models/reminder_model.dart';
 import 'package:uuid/uuid.dart';
 
 class ActivityModel {
@@ -15,6 +16,7 @@ class ActivityModel {
   late String? chainId;
   late String? habitId;
   late String? templateId;
+  late List<ReminderModel> reminders;
 
   ActivityModel({
     required this.id,
@@ -23,6 +25,7 @@ class ActivityModel {
     required this.title,
     required this.iconPath,
     required this.color,
+    required this.reminders,
     this.isDone = false,
     this.fromTemplate = false,
     this.chainId,
@@ -45,23 +48,25 @@ class ActivityModel {
       title: id,
       iconPath: "",
       color: color,
+      reminders: [],
     );
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['id'] = id;
-    _data['time'] = time.inMinutes;
-    _data['duration'] = duration.inMinutes;
-    _data['title'] = title;
-    _data['iconPath'] = iconPath;
-    _data['color'] = color.value.toString();
-    _data['fromTemplate'] = fromTemplate;
-    _data['isDone'] = isDone;
-    _data['chainId'] = chainId;
-    _data['habitId'] = habitId;
-    _data['templateId'] = templateId;
-    return _data;
+    final data = <String, dynamic>{};
+    data['id'] = id;
+    data['time'] = time.inMinutes;
+    data['duration'] = duration.inMinutes;
+    data['title'] = title;
+    data['iconPath'] = iconPath;
+    data['color'] = color.value.toString();
+    data['fromTemplate'] = fromTemplate;
+    data['isDone'] = isDone;
+    data['chainId'] = chainId;
+    data['habitId'] = habitId;
+    data['templateId'] = templateId;
+    data['reminders'] = reminders.map((e) => e.toJson()).toList();
+    return data;
   }
 
   ActivityModel.fromJson(Map<String, dynamic> json) {
@@ -76,5 +81,8 @@ class ActivityModel {
     chainId = json['chainId'];
     habitId = json['habitId'];
     templateId = json['templateId'];
+    reminders = List.from(json["reminders"])
+        .map((e) => ReminderModel.fromJson(e))
+        .toList();
   }
 }
