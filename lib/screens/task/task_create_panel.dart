@@ -4,6 +4,7 @@ import 'package:chain_app/models/reminder_model.dart';
 import 'package:chain_app/screens/task/widgets/task_color_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_duration_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_icon.dart';
+import 'package:chain_app/screens/task/widgets/task_icon_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_name_input_field.dart';
 import 'package:chain_app/screens/task/widgets/task_reminder_picker.dart';
 import 'package:chain_app/widgets/app_button.dart';
@@ -80,7 +81,16 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
                       selectedColor: selectedColor,
                     ),
                     const SizedBox(height: 24),
-                    _getIconList(context),
+                    // _getIconList(context),
+                    TaskIconPicker(
+                        color: selectedColor,
+                        selectedTaskIcon: selectedTaskIcon,
+                        onChange: (taskIconData) {
+                          setState(() {
+                            selectedTaskIcon = taskIconData;
+                            taskNameController.text = selectedTaskIcon.name;
+                          });
+                        }),
                     const SizedBox(height: 32),
                     TaskColorPicker(
                       selectedColor: selectedColor,

@@ -195,7 +195,7 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TaskIcon(
-          iconData: TaskIconData.coffee,
+          iconData: TaskIconData.others,
           othersButton: true,
           onSelected: (_) {},
           selectedColor: selectedColor,

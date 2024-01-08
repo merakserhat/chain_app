@@ -7,6 +7,10 @@ final class TaskIconData extends Equatable {
     "assets/images/icons/dumbel.png",
     "Sports",
   );
+  static const TaskIconData others =
+      TaskIconData("assets/images/icons/more.png", "More");
+  static const TaskIconData less =
+      TaskIconData("assets/images/icons/minus.png", "Less");
   static const TaskIconData study =
       TaskIconData("assets/images/icons/pen.png", "Study");
   static const TaskIconData meal =
@@ -16,13 +20,23 @@ final class TaskIconData extends Equatable {
   static const TaskIconData kitchen =
       TaskIconData("assets/images/icons/cooking.png", "Kitchen");
   static const TaskIconData read =
-      TaskIconData("assets/images/chain.png", "Read");
+      TaskIconData("assets/images/icons/read.png", "Read");
   static const TaskIconData film =
-      TaskIconData("assets/images/chain.png", "Film");
+      TaskIconData("assets/images/icons/monitor.png", "Film");
   static const TaskIconData coffee =
-      TaskIconData("assets/images/chain.png", "Coffee");
+      TaskIconData("assets/images/icons/friend.png", "Friends");
   static const TaskIconData school =
-      TaskIconData("assets/images/chain.png", "School");
+      TaskIconData("assets/images/icons/chain.png", "School");
+  static const TaskIconData laundry =
+      TaskIconData("assets/images/icons/laundry.png", "Laundry");
+  static const TaskIconData dishes =
+      TaskIconData("assets/images/icons/dishes.png", "Dishes");
+  static const TaskIconData travel =
+      TaskIconData("assets/images/icons/travel.png", "Travel");
+  static const TaskIconData shower =
+      TaskIconData("assets/images/icons/shower.png", "Shower");
+  static const TaskIconData code =
+      TaskIconData("assets/images/icons/code.png", "Code");
 
   static List<TaskIconData> taskIcons = [
     sports,
@@ -33,7 +47,12 @@ final class TaskIconData extends Equatable {
     read,
     film,
     coffee,
-    school
+    school,
+    laundry,
+    dishes,
+    travel,
+    shower,
+    code,
   ];
 
   static List<TaskIconData> getFavTaskIcons(int size) {
@@ -85,7 +104,7 @@ class TaskIcon extends StatelessWidget {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         width: size,
         height: size,
         decoration: BoxDecoration(
@@ -98,10 +117,14 @@ class TaskIcon extends StatelessWidget {
         ),
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(othersButton ? 12 : 8),
             child: Image.asset(
               iconData.src,
-              color: panel ? selectedColor : Colors.white,
+              color: othersButton
+                  ? AppColors.dark400
+                  : panel
+                      ? selectedColor
+                      : Colors.white,
             ),
           ),
         ),

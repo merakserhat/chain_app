@@ -22,7 +22,7 @@ class ChainButton extends StatelessWidget {
             child: Row(
               children: [
                 Image.asset(
-                  "assets/images/chain.png",
+                  "assets/images/icons/chain.png",
                   width: 18,
                 ),
                 SizedBox(width: 4),
