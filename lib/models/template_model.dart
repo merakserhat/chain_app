@@ -3,11 +3,12 @@ import 'dart:ui';
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/reminder_model.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/utils/id_util.dart';
 import 'package:uuid/uuid.dart';
 
 class TemplateModel {
   late List<List<Duration>> durations;
-  late String id;
+  late int id;
   late Duration duration;
   late String title;
   late String iconPath;
@@ -27,7 +28,7 @@ class TemplateModel {
   });
 
   static TemplateModel getBaseRoutine() {
-    String id = const Uuid().v1();
+    int id = IdUtil.generateIntId();
     return TemplateModel(
       durations: [
         [],

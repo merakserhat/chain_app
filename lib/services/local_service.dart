@@ -58,7 +58,7 @@ class LocalService {
       }
     }
 
-    List<String> routineIds = routines.map((e) => e.id).toList();
+    List<int> routineIds = routines.map((e) => e.id).toList();
     List savedRoutineIds = routineBox.keys.toList();
     for (int i = 0; i < savedRoutineIds.length; i++) {
       if (!routineIds.contains(savedRoutineIds[i])) {
@@ -121,7 +121,7 @@ class LocalService {
       }
     }
 
-    List<String> templateIds = templates.map((e) => e.id).toList();
+    List<int> templateIds = templates.map((e) => e.id).toList();
     List savedTemplateIds = templateBox.keys.toList();
     for (int i = 0; i < savedTemplateIds.length; i++) {
       if (!templateIds.contains(savedTemplateIds[i])) {

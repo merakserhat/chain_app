@@ -1,5 +1,7 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/screens/task/widgets/task_icon_picker.dart';
+import 'package:chain_app/utils/id_util.dart';
 import 'package:chain_app/widgets/custom_checkbox.dart';
 import 'package:chain_app/screens/task/widgets/task_color_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_duration_picker.dart';
@@ -69,7 +71,15 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
                       selectedColor: selectedColor,
                     ),
                     const SizedBox(height: 24),
-                    _getIconList(context),
+                    TaskIconPicker(
+                        color: selectedColor,
+                        selectedTaskIcon: selectedTaskIcon,
+                        onChange: (taskIconData) {
+                          setState(() {
+                            selectedTaskIcon = taskIconData;
+                            taskNameController.text = selectedTaskIcon.name;
+                          });
+                        }),
                     const SizedBox(height: 32),
                     TaskColorPicker(
                       selectedColor: selectedColor,
@@ -118,9 +128,9 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
                     color: selectedColor,
-                    customPadding: EdgeInsets.symmetric(vertical: 12),
+                    customPadding: const EdgeInsets.symmetric(vertical: 12),
                     onPressed: () {
-                      String id = const Uuid().v1();
+                      int id = IdUtil.generateIntId();
                       RoutineModel routineModel = RoutineModel(
                         id: id,
                         showOnPanel: isShow,
@@ -183,37 +193,6 @@ class _TaskCreatePanelState extends State<CreateRoutinePanel> {
           SizedBox(width: 4),
         ],
       ),
-    );
-  }
-
-  Widget _getIconList(BuildContext context) {
-    int favIconCount =
-        MediaQuery.of(context).size.width ~/ (TaskIcon.size + 8) - 1;
-    List<TaskIconData> favIcons = TaskIconData.getFavTaskIcons(favIconCount);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        TaskIcon(
-          iconData: TaskIconData.others,
-          othersButton: true,
-          onSelected: (_) {},
-          selectedColor: selectedColor,
-        ),
-        ...favIcons.map(
-          (taskIcon) => TaskIcon(
-            iconData: taskIcon,
-            selected: taskIcon == selectedTaskIcon,
-            onSelected: (taskIconData) {
-              setState(() {
-                selectedTaskIcon = taskIconData;
-                taskNameController.text = selectedTaskIcon.name;
-              });
-            },
-            selectedColor: selectedColor,
-          ),
-        ),
-      ],
     );
   }
 }

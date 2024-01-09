@@ -18,7 +18,7 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
   List<int> selectedIndexes = [];
   List<RoutineModel> routines = [
     RoutineModel(
-        id: "0",
+        id: 0,
         duration: const Duration(hours: 1),
         title: "Meal",
         iconPath: "assets/images/icons/food.png",
@@ -26,7 +26,7 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
         color: AppColors.yellow,
         reminders: []),
     RoutineModel(
-        id: "1",
+        id: 1,
         duration: const Duration(minutes: 90),
         title: "Gym",
         iconPath: "assets/images/icons/dumbell.png",
@@ -34,7 +34,7 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
         color: AppColors.red,
         reminders: []),
     RoutineModel(
-        id: "2",
+        id: 2,
         duration: const Duration(hours: 2),
         title: "Study",
         iconPath: "assets/images/icons/pen.png",
@@ -42,7 +42,7 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
         color: AppColors.blue,
         reminders: []),
     RoutineModel(
-        id: "3",
+        id: 3,
         duration: const Duration(hours: 1),
         title: "Cooking",
         iconPath: "assets/images/icons/cooking.png",
@@ -50,7 +50,7 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
         color: AppColors.purple,
         reminders: []),
     RoutineModel(
-        id: "4",
+        id: 4,
         duration: const Duration(hours: 2),
         title: "Football",
         iconPath: "assets/images/icons/football.png",
@@ -58,7 +58,7 @@ class _RoutineOnboardingState extends State<RoutineOnboarding> {
         color: AppColors.green,
         reminders: []),
     RoutineModel(
-        id: "5",
+        id: 5,
         duration: const Duration(hours: 2),
         title: "Film",
         iconPath: "assets/images/icons/monitor.png",

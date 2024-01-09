@@ -7,9 +7,9 @@ import 'package:chain_app/screens/task/widgets/task_icon.dart';
 import 'package:chain_app/screens/task/widgets/task_icon_picker.dart';
 import 'package:chain_app/screens/task/widgets/task_name_input_field.dart';
 import 'package:chain_app/screens/task/widgets/task_reminder_picker.dart';
+import 'package:chain_app/utils/id_util.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class TaskCreatePanel extends StatefulWidget {
   const TaskCreatePanel({
@@ -19,10 +19,12 @@ class TaskCreatePanel extends StatefulWidget {
     this.onCreate,
     this.onEdit,
     this.editedActivity,
+    required this.panelDate,
   }) : super(key: key);
 
   final Duration initialDuration;
   final Duration initialTime;
+  final DateTime panelDate;
   final ActivityModel? editedActivity;
   final Function(ActivityModel activityModel)? onCreate;
   final Function(ActivityModel activityModel)? onEdit;
@@ -150,10 +152,11 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
                     color: selectedColor,
                     customPadding: const EdgeInsets.symmetric(vertical: 12),
                     onPressed: () {
-                      String id =
-                          widget.editedActivity?.id ?? const Uuid().v1();
+                      int id =
+                          widget.editedActivity?.id ?? IdUtil.generateIntId();
                       ActivityModel activityModel = ActivityModel(
                         id: id,
+                        date: widget.panelDate,
                         time: widget.initialTime,
                         duration: selectedDuration,
                         title: taskNameController.text,
@@ -216,37 +219,6 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
           SizedBox(width: 4),
         ],
       ),
-    );
-  }
-
-  Widget _getIconList(BuildContext context) {
-    int favIconCount =
-        MediaQuery.of(context).size.width ~/ (TaskIcon.size + 8) - 1;
-    List<TaskIconData> favIcons = TaskIconData.getFavTaskIcons(favIconCount);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        TaskIcon(
-          iconData: TaskIconData.coffee,
-          othersButton: true,
-          onSelected: (_) {},
-          selectedColor: selectedColor,
-        ),
-        ...favIcons.map(
-          (taskIcon) => TaskIcon(
-            iconData: taskIcon,
-            selected: taskIcon == selectedTaskIcon,
-            onSelected: (taskIconData) {
-              setState(() {
-                selectedTaskIcon = taskIconData;
-                taskNameController.text = selectedTaskIcon.name;
-              });
-            },
-            selectedColor: selectedColor,
-          ),
-        ),
-      ],
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:chain_app/models/template_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circle.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/time_panel.dart';
 import 'package:chain_app/screens/task/task_create_panel.dart';
+import 'package:chain_app/services/notification_service.dart';
 import 'package:chain_app/utils/program.dart';
 import 'package:chain_app/widgets/drag/drag_item.dart';
 import 'package:chain_app/widgets/drag/drag_model.dart';
@@ -254,6 +255,7 @@ class DragStateModel extends ChangeNotifier {
         activityModel: ActivityModel(
           id: routine.id,
           time: time,
+          date: dailyModel.date,
           duration: duration,
           title: routine.title,
           iconPath: routine.iconPath,
@@ -316,6 +318,7 @@ class DragStateModel extends ChangeNotifier {
       context: context,
       isScrollControlled: true,
       builder: (context) => TaskCreatePanel(
+        panelDate: dailyModel.date,
         initialTime: activityTime,
         initialDuration: activityDuration,
         onCreate: (ActivityModel activityModel) {
@@ -336,6 +339,7 @@ class DragStateModel extends ChangeNotifier {
           dragModels.add(dragModel);
           rearrangeOthers(dragModel);
           save();
+          NotificationService().manageActivityNotifications(activityModel);
           notifyListeners();
         },
       ),
@@ -358,6 +362,7 @@ class DragStateModel extends ChangeNotifier {
             draggingRoutine!.hourHeight / 2,
         isMoving: false,
         activityModel: ActivityModel(
+            date: dailyModel.date,
             id: routine.id,
             time: const Duration(hours: 0),
             duration: routine.duration,
@@ -379,14 +384,13 @@ class DragStateModel extends ChangeNotifier {
   void onDeleteDraggable(DragModel dragModel) {
     dragModels.remove(dragModel);
     checkOverlaps();
-    //TODO bunu updateleyerek savele
+    NotificationService().deleteActivityNotifications(dragModel.activityModel);
     save();
     notifyListeners();
   }
 
   void onActivityStatusChanged(DragModel dragModel, bool status) {
     dragModel.activityModel.isDone = status;
-    //TODO bunu updateleyerek savele
     save();
     notifyListeners();
   }
@@ -441,6 +445,7 @@ class DragStateModel extends ChangeNotifier {
       context: context,
       isScrollControlled: true,
       builder: (context) => TaskCreatePanel(
+        panelDate: dailyModel.date,
         initialTime: activityModel.time,
         initialDuration: activityModel.duration,
         editedActivity: activityModel,
@@ -451,6 +456,8 @@ class DragStateModel extends ChangeNotifier {
           dragModel.fixDragModel(panelHeight, hourHeight, dailyModel.wakeTime);
           rearrangeOthers(dragModel);
           save();
+          NotificationService().deleteActivityNotifications(activityModel);
+          NotificationService().manageActivityNotifications(activityModel);
           notifyListeners();
         },
       ),

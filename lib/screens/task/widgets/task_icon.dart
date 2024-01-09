@@ -26,7 +26,7 @@ final class TaskIconData extends Equatable {
   static const TaskIconData coffee =
       TaskIconData("assets/images/icons/friend.png", "Friends");
   static const TaskIconData school =
-      TaskIconData("assets/images/icons/chain.png", "School");
+      TaskIconData("assets/images/icons/school.png", "School");
   static const TaskIconData laundry =
       TaskIconData("assets/images/icons/laundry.png", "Laundry");
   static const TaskIconData dishes =

@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/reminder_model.dart';
+import 'package:chain_app/utils/id_util.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class RoutineModel {
-  late String id;
+  late int id;
   late Duration duration;
   late String title;
   late String iconPath;
@@ -25,7 +26,7 @@ class RoutineModel {
   });
 
   static RoutineModel getBaseRoutine() {
-    String id = const Uuid().v1();
+    int id = IdUtil.generateIntId();
     return RoutineModel(
       id: id,
       duration: const Duration(hours: 1),

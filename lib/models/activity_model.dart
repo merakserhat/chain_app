@@ -2,12 +2,13 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:chain_app/models/reminder_model.dart';
-import 'package:uuid/uuid.dart';
+import 'package:chain_app/utils/id_util.dart';
 
 class ActivityModel {
-  late String id;
+  late int id;
   late Duration time;
   late Duration duration;
+  late DateTime date;
   late String title;
   late String iconPath;
   late Color color;
@@ -15,7 +16,7 @@ class ActivityModel {
   late bool isDone;
   late String? chainId;
   late String? habitId;
-  late String? templateId;
+  late int? templateId;
   late List<ReminderModel> reminders;
 
   ActivityModel({
@@ -26,6 +27,7 @@ class ActivityModel {
     required this.iconPath,
     required this.color,
     required this.reminders,
+    required this.date,
     this.isDone = false,
     this.fromTemplate = false,
     this.chainId,
@@ -34,7 +36,7 @@ class ActivityModel {
   });
 
   static ActivityModel getBaseActivity() {
-    String id = const Uuid().v1();
+    int id = IdUtil.generateIntId();
     Color color = Color.fromRGBO(
       Random().nextInt(256),
       Random().nextInt(256),
@@ -45,7 +47,8 @@ class ActivityModel {
       id: id,
       time: const Duration(hours: 10),
       duration: const Duration(hours: 1),
-      title: id,
+      title: id.toString(),
+      date: DateTime.now(),
       iconPath: "",
       color: color,
       reminders: [],
@@ -65,6 +68,7 @@ class ActivityModel {
     data['chainId'] = chainId;
     data['habitId'] = habitId;
     data['templateId'] = templateId;
+    data['date'] = date.toString();
     data['reminders'] = reminders.map((e) => e.toJson()).toList();
     return data;
   }
@@ -81,6 +85,7 @@ class ActivityModel {
     chainId = json['chainId'];
     habitId = json['habitId'];
     templateId = json['templateId'];
+    date = DateTime.parse(json['date']).toLocal();
     reminders = List.from(json["reminders"])
         .map((e) => ReminderModel.fromJson(e))
         .toList();

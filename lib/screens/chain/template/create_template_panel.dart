@@ -3,6 +3,7 @@ import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/models/template_model.dart';
 import 'package:chain_app/screens/chain/template/template_date_selector.dart';
 import 'package:chain_app/screens/chain/widgets/routine_selector_dropdown.dart';
+import 'package:chain_app/utils/id_util.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -92,7 +93,7 @@ class _TaskCreatePanelState extends State<CreateTemplatePanel> {
                               .any((element) => element.length > 1)) {
                         return;
                       }
-                      String id = const Uuid().v1();
+                      int id = IdUtil.generateIntId();
                       TemplateModel templateModel = TemplateModel(
                         durations: dateSelectorController.selectedDurations,
                         id: id,
