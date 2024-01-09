@@ -18,6 +18,7 @@ void main() async {
   await LocalService().init();
   await _configureLocalTimeZone();
   NotificationService().initialize();
+  NotificationService().manageDailyNotifications();
   Program().init();
   runApp(const MyApp());
 }

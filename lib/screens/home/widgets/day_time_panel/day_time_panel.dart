@@ -1,5 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/services/local_service.dart';
+import 'package:chain_app/services/notification_service.dart';
 import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/app_button.dart';
 import 'package:chain_app/widgets/custom_checkbox.dart';
@@ -93,6 +94,7 @@ class _DayTimePanelState extends State<DayTimePanel> {
                                     30);
                         if (isDefault) {
                           LocalService().saveDayTime(wakeTime, sleepTime);
+                          NotificationService().manageDailyNotifications();
                         }
                         widget.onUpdate(sleepTime, wakeTime);
                         Navigator.of(context).pop();

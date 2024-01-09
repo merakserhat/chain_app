@@ -8,7 +8,6 @@ import 'package:chain_app/utils/date_util.dart';
 import 'package:chain_app/widgets/app_screen.dart';
 import 'package:chain_app/widgets/drag/drag_state_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -119,17 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
             onDaySelected: onDaySelected,
             onWeekChanged: onWeekChanged,
             onJumpToPageFromCalender: onJumpToPageFromCalender,
-          ),
-          ElevatedButton(
-            child: Text('Show plain notification with payload'),
-            onPressed: () async {
-              // NotificationService().scheduleNotification(
-              //   scheduledNotificationDateTime: DateTime.now(),
-              //   title: "Scheduled",
-              //   body: "content",
-              //   payLoad: "pl",
-              // );
-            },
           ),
           Expanded(
             child: PageView.builder(

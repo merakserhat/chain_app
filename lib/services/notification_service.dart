@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:chain_app/models/activity_model.dart';
+import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/models/reminder_model.dart';
+import 'package:chain_app/services/local_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -286,6 +288,77 @@ class NotificationService {
       flutterLocalNotificationsPlugin.cancel(
           int.parse(reminderModel.id.toString() + activityModel.id.toString()));
     }
+  }
+
+  Future manageDailyNotifications() async {
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      'Good Morning',
+      'Close this notification and put away your phone for an hour',
+      _nextInstanceOfMorning(),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'daily notification channel id', 'daily notification channel name',
+            channelDescription: 'daily notification description'),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      1,
+      'Planning Time',
+      '1 hour to sleep! Plan your day and close the phone.',
+      _nextInstanceNight(),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+            'daily notification channel id', 'daily notification channel name',
+            channelDescription: 'daily notification description'),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+  tz.TZDateTime _nextInstanceOfMorning() {
+    DailyModel? tomorrowDaily =
+        LocalService().loadDaily(DateTime.now().add(const Duration(days: 1)));
+
+    List<Duration> defaultDateTimes = LocalService().loadDayTime();
+    Duration wakeDefault = defaultDateTimes[0];
+
+    int hour = (tomorrowDaily?.wakeTime ?? wakeDefault).inHours;
+    int minute = (tomorrowDaily?.wakeTime ?? wakeDefault).inMinutes % 60;
+
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
+
+    return scheduledDate;
+  }
+
+  tz.TZDateTime _nextInstanceNight() {
+    DailyModel? tomorrowDaily = LocalService().loadDaily(DateTime.now());
+
+    List<Duration> defaultDateTimes = LocalService().loadDayTime();
+    Duration sleepTime = defaultDateTimes[1];
+
+    int hour = (tomorrowDaily?.sleepTime ?? sleepTime).inHours - 1;
+    int minute = (tomorrowDaily?.sleepTime ?? sleepTime).inMinutes % 60;
+
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
+
+    print("Schedule night " + scheduledDate.toString());
+
+    return scheduledDate;
   }
 }
 

@@ -430,6 +430,7 @@ class DragStateModel extends ChangeNotifier {
     dailyModel.wakeTime = wakeTime;
     fixDragModels();
     notifyListeners();
+    NotificationService().manageDailyNotifications();
     save();
   }
 
