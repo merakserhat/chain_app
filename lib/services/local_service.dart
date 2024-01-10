@@ -35,7 +35,7 @@ class LocalService {
   ///Gets routines as a list
   List<RoutineModel> loadRoutines() {
     Box routineBox = Hive.box("routines");
-    routineBox.clear();
+    // routineBox.clear();
     List<RoutineModel> routines = [];
 
     for (String key in routineBox.keys) {
@@ -79,7 +79,7 @@ class LocalService {
 
   DailyModel? loadDaily(DateTime dateTime) {
     Box dailyBox = Hive.box("dailies");
-    dailyBox.clear();
+    // dailyBox.clear();
     String id = DailyModel.produceDailyId(dateTime);
 
     var retrievedItem = dailyBox.get(id);

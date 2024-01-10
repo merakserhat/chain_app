@@ -8,6 +8,7 @@ import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circ
 import 'package:chain_app/screens/home/widgets/time_panel/time_panel.dart';
 import 'package:chain_app/screens/task/task_create_panel.dart';
 import 'package:chain_app/services/notification_service.dart';
+import 'package:chain_app/utils/id_util.dart';
 import 'package:chain_app/utils/program.dart';
 import 'package:chain_app/widgets/drag/drag_item.dart';
 import 'package:chain_app/widgets/drag/drag_model.dart';
@@ -363,7 +364,7 @@ class DragStateModel extends ChangeNotifier {
         isMoving: false,
         activityModel: ActivityModel(
             date: dailyModel.date,
-            id: routine.id,
+            id: IdUtil.generateIntId(),
             time: const Duration(hours: 0),
             duration: routine.duration,
             title: routine.title,
