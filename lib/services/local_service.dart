@@ -39,6 +39,7 @@ class LocalService {
     List<RoutineModel> routines = [];
 
     for (String key in routineBox.keys) {
+      print(key);
       final routineMap =
           json.decode(json.encode(routineBox.get(key))) as Map<String, dynamic>;
 
@@ -54,11 +55,11 @@ class LocalService {
     // save not exists
     for (int i = 0; i < routines.length; i++) {
       if (!routineBox.keys.contains(routines[i].id)) {
-        await routineBox.put(routines[i].id, routines[i].toJson());
+        await routineBox.put(routines[i].id.toString(), routines[i].toJson());
       }
     }
 
-    List<int> routineIds = routines.map((e) => e.id).toList();
+    List<String> routineIds = routines.map((e) => e.id.toString()).toList();
     List savedRoutineIds = routineBox.keys.toList();
     for (int i = 0; i < savedRoutineIds.length; i++) {
       if (!routineIds.contains(savedRoutineIds[i])) {
@@ -97,7 +98,7 @@ class LocalService {
 
   List<TemplateModel> loadTemplates() {
     Box templateBox = Hive.box(templateBoxName);
-    templateBox.clear();
+    // templateBox.clear();
     List<TemplateModel> templates = [];
 
     for (String key in templateBox.keys) {

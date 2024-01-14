@@ -11,10 +11,12 @@ class RoutineSettingsPanel extends StatelessWidget {
     required this.routineModel,
     required this.onDelete,
     this.objectName = "routine",
+    required this.onEdit,
   }) : super(key: key);
 
   final RoutineModel routineModel;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
   final String objectName;
 
   @override
@@ -36,7 +38,8 @@ class RoutineSettingsPanel extends StatelessWidget {
             children: [
               _getPanelHeader(context),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -60,12 +63,11 @@ class RoutineSettingsPanel extends StatelessWidget {
                         }),
                     const SizedBox(width: 8),
                     SquareIconButton(
-                        icon: Icons.edit,
-                        label: "Edit",
-                        color: routineModel.color,
-                        onTap: () {
-                          //TODO: edit
-                        }),
+                      icon: Icons.edit,
+                      label: "Edit",
+                      color: routineModel.color,
+                      onTap: onEdit,
+                    ),
                   ],
                 ),
               )

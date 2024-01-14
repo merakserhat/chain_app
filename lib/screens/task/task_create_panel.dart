@@ -49,7 +49,8 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
     taskNameController = TextEditingController(
         text: widget.editedActivity?.title ?? selectedTaskIcon.name);
     selectedColor = widget.editedActivity?.color ?? AppColors.primary;
-    selectedDuration = widget.initialDuration;
+    selectedDuration =
+        widget.editedActivity?.duration ?? widget.initialDuration;
     selectedReminders = widget.editedActivity?.reminders ?? [];
   }
 
@@ -67,110 +68,120 @@ class _TaskCreatePanelState extends State<TaskCreatePanel> {
               topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           color: AppColors.dark700,
         ),
-        child: Stack(
+        child: Column(
           children: [
-            SingleChildScrollView(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _getPanelHeader(context),
-                    const SizedBox(height: 8),
-                    TaskNameInput(
-                      taskIconData: selectedTaskIcon,
-                      taskNameController: taskNameController,
-                      selectedColor: selectedColor,
-                    ),
-                    const SizedBox(height: 24),
-                    // _getIconList(context),
-                    TaskIconPicker(
-                        color: selectedColor,
-                        selectedTaskIcon: selectedTaskIcon,
-                        onChange: (taskIconData) {
-                          setState(() {
-                            selectedTaskIcon = taskIconData;
-                            taskNameController.text = selectedTaskIcon.name;
-                          });
-                        }),
-                    const SizedBox(height: 32),
-                    TaskColorPicker(
-                      selectedColor: selectedColor,
-                      onSelected: (color) {
-                        setState(() {
-                          selectedColor = color;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 32),
-                    TaskDurationPicker(
-                      selectedColor: selectedColor,
-                      selectedDuration: selectedDuration,
-                      onSelected: (duration) {
-                        setState(() {
-                          selectedDuration = duration;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 32),
-                    TaskReminderPicker(
-                      selectedColor: selectedColor,
-                      selectedReminders: selectedReminders,
-                      onReminderStateChanged: (reminderModel, isSelected) {
-                        if (isSelected &&
-                            !selectedReminders.contains(reminderModel)) {
-                          setState(() {
-                            selectedReminders.add(reminderModel);
-                          });
-                          return;
-                        }
+            _getPanelHeader(context),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TaskNameInput(
+                            taskIconData: selectedTaskIcon,
+                            taskNameController: taskNameController,
+                            selectedColor: selectedColor,
+                          ),
+                          const SizedBox(height: 24),
+                          // _getIconList(context),
+                          TaskIconPicker(
+                              color: selectedColor,
+                              selectedTaskIcon: selectedTaskIcon,
+                              onChange: (taskIconData) {
+                                setState(() {
+                                  selectedTaskIcon = taskIconData;
+                                  taskNameController.text =
+                                      selectedTaskIcon.name;
+                                });
+                              }),
+                          const SizedBox(height: 32),
+                          TaskColorPicker(
+                            selectedColor: selectedColor,
+                            onSelected: (color) {
+                              setState(() {
+                                selectedColor = color;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          TaskDurationPicker(
+                            selectedColor: selectedColor,
+                            selectedDuration: selectedDuration,
+                            onSelected: (duration) {
+                              setState(() {
+                                selectedDuration = duration;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 32),
+                          TaskReminderPicker(
+                            selectedColor: selectedColor,
+                            selectedReminders: selectedReminders,
+                            onReminderStateChanged:
+                                (reminderModel, isSelected) {
+                              if (isSelected &&
+                                  !selectedReminders.contains(reminderModel)) {
+                                setState(() {
+                                  selectedReminders.add(reminderModel);
+                                });
+                                return;
+                              }
 
-                        if (!isSelected &&
-                            selectedReminders.contains(reminderModel)) {
-                          setState(() {
-                            selectedReminders.remove(reminderModel);
-                          });
-                        }
-                      },
+                              if (!isSelected &&
+                                  selectedReminders.contains(reminderModel)) {
+                                setState(() {
+                                  selectedReminders.remove(reminderModel);
+                                });
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 82),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    label: widget.onEdit == null
-                        ? "Create Activity"
-                        : "Edit Activity",
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: selectedColor,
-                    customPadding: const EdgeInsets.symmetric(vertical: 12),
-                    onPressed: () {
-                      int id =
-                          widget.editedActivity?.id ?? IdUtil.generateIntId();
-                      ActivityModel activityModel = ActivityModel(
-                        id: id,
-                        date: widget.panelDate,
-                        time: widget.initialTime,
-                        duration: selectedDuration,
-                        title: taskNameController.text,
-                        iconPath: selectedTaskIcon.src,
-                        color: selectedColor,
-                        reminders: selectedReminders,
-                      );
-                      widget.onCreate != null
-                          ? widget.onCreate!(activityModel)
-                          : widget.onEdit!(activityModel);
-                      Navigator.of(context).pop();
-                    },
                   ),
-                ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: AppButton(
+                          label: widget.onEdit == null
+                              ? "Create Activity"
+                              : "Edit Activity",
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          color: selectedColor,
+                          customPadding:
+                              const EdgeInsets.symmetric(vertical: 12),
+                          onPressed: () {
+                            int id = widget.editedActivity?.id ??
+                                IdUtil.generateIntId();
+                            ActivityModel activityModel = ActivityModel(
+                              id: id,
+                              date: widget.panelDate,
+                              time: widget.initialTime,
+                              duration: selectedDuration,
+                              title: taskNameController.text,
+                              iconPath: selectedTaskIcon.src,
+                              color: selectedColor,
+                              reminders: selectedReminders,
+                            );
+                            widget.onCreate != null
+                                ? widget.onCreate!(activityModel)
+                                : widget.onEdit!(activityModel);
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

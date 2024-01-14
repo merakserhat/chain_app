@@ -36,6 +36,7 @@ class TemplateListItem extends StatelessWidget {
               routineModel: templateModel.toRoutine(),
               objectName: "template",
               onDelete: onDelete ?? () {},
+              onEdit: () {},
             ),
           );
           return;

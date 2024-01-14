@@ -12,6 +12,7 @@ class RoutineListItem extends StatelessWidget {
     required this.onChange,
     this.enableEdit = false,
     this.onDelete,
+    this.onEdit,
   }) : super(key: key);
 
   final RoutineModel routineModel;
@@ -19,6 +20,7 @@ class RoutineListItem extends StatelessWidget {
   final bool enableEdit;
   final Function(bool) onChange;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +36,7 @@ class RoutineListItem extends StatelessWidget {
             builder: (context) => RoutineSettingsPanel(
               routineModel: routineModel,
               onDelete: onDelete ?? () {},
+              onEdit: onEdit ?? () {},
             ),
           );
           return;

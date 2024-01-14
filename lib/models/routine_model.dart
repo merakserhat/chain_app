@@ -46,7 +46,7 @@ class RoutineModel {
     data['iconPath'] = iconPath;
     data['color'] = color.value.toString();
     data['showOnPanel'] = showOnPanel;
-    data['reminders'] = reminders.map((e) => e.toJson());
+    data['reminders'] = reminders.map((e) => e.toJson()).toList();
     return data;
   }
 

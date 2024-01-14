@@ -35,6 +35,7 @@ class HabitListItem extends StatelessWidget {
             builder: (context) => RoutineSettingsPanel(
               routineModel: routineModel,
               onDelete: onDelete ?? () {},
+              onEdit: () {},
             ),
           );
           return;

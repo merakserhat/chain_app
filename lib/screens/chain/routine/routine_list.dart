@@ -1,5 +1,6 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/routine_model.dart';
+import 'package:chain_app/screens/chain/routine/create_routine_panel.dart';
 import 'package:chain_app/screens/chain/routine/routine_list_item.dart';
 import 'package:chain_app/screens/chain/routine/routine_onboarding.dart';
 import 'package:chain_app/utils/program.dart';
@@ -25,7 +26,7 @@ class RoutineList extends StatelessWidget {
         : SingleChildScrollView(
             child: Column(
                 children: List.generate(
-                    ((Program().routines.length + 1) / 2).toInt(),
+                    (Program().routines.length + 1) ~/ 2,
                     (i) => Row(
                           children: List.generate(2, (j) {
                             int routineIndex = 2 * i + j;
@@ -43,6 +44,20 @@ class RoutineList extends StatelessWidget {
                                 onDelete: () {
                                   deleteRoutine(
                                       Program().routines[routineIndex]);
+                                },
+                                onEdit: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (context) => CreateRoutinePanel(
+                                      initialDuration: const Duration(hours: 2),
+                                      onEdit: (RoutineModel routineModel) {
+                                        Program().updateRoutines(() =>
+                                            Program().routines[routineIndex] =
+                                                routineModel);
+                                      },
+                                    ),
+                                  );
                                 },
                                 onChange: (_) {},
                               ),
