@@ -1,7 +1,9 @@
 import 'package:chain_app/constants/app_theme.dart';
 import 'package:chain_app/models/daily_model.dart';
 import 'package:chain_app/screens/home/widgets/day_time_panel/day_time_panel.dart';
+import 'package:chain_app/screens/home/widgets/time_panel/currently_dragging_routine.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/draggable_routine_circle.dart';
+import 'package:chain_app/screens/home/widgets/time_panel/time_routine_list.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/timer_texts.dart';
 import 'package:chain_app/utils/program.dart';
 import 'package:chain_app/widgets/drag/drag_item_shape.dart';
@@ -86,27 +88,7 @@ class _TimePanelState extends State<TimePanel> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(
-                                  Program().routines.length,
-                                  (index) => Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 4),
-                                        child: DraggableRoutineCircle(
-                                          hourHeight: dragState.hourHeight,
-                                          routine: Program().routines[index],
-                                          dragged:
-                                              dragState.updateDraggableInfo,
-                                        ),
-                                      )),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
+                        const TimeRoutineList(),
                         GestureDetector(
                           onTap: () => dragState.templateStatusChanged(
                               !dragState.isTemplatesActive),
@@ -161,28 +143,7 @@ class _TimePanelState extends State<TimePanel> {
                   ),
                 ],
               ),
-              dragState.draggingRoutine != null &&
-                      dragState.draggingRoutine!.dragging
-                  ? Positioned(
-                      top: dragState.draggingRoutine!.globalPos.dy -
-                          dragState.stackHeightDiff,
-                      left: dragState.draggingRoutine!.globalPos.dx,
-                      child: DragItemShape(
-                        iconPath:
-                            dragState.draggingRoutine!.routineModel.iconPath,
-                        isPartial: dragState.draggingRoutine!.routineModel
-                                .duration.inMinutes <
-                            60,
-                        height: (dragState.draggingRoutine!.routineModel
-                                    .duration.inMinutes /
-                                60) *
-                            dragState.draggingRoutine!.hourHeight,
-                        color: dragState.draggingRoutine!.routineModel.color,
-                        dragItemWidth: dragState.draggingRoutine!.hourHeight,
-                        isMoving: true,
-                      ),
-                    )
-                  : Container(),
+              const CurrentlyDraggingRoutine(),
             ],
           ),
         );

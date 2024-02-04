@@ -1,6 +1,8 @@
 import 'package:chain_app/models/routine_model.dart';
 import 'package:chain_app/screens/home/widgets/time_panel/routine_circle.dart';
+import 'package:chain_app/widgets/drag/drag_state_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DraggableRoutineCircle extends StatelessWidget {
   const DraggableRoutineCircle({
@@ -68,9 +70,12 @@ class DraggableRoutineCircle extends StatelessWidget {
             dragging: false,
           ));
         },
-        child: RoutineCircle(
-          hourHeight: hourHeight,
-          routine: routine,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: RoutineCircle(
+            hourHeight: hourHeight,
+            routine: routine,
+          ),
         ));
   }
 

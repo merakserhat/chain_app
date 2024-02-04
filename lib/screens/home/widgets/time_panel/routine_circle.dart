@@ -17,7 +17,7 @@ class RoutineCircle extends StatelessWidget {
       height: hourHeight,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(100), color: AppColors.dark500),
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Center(
         child: Image.asset(
           routine.iconPath,

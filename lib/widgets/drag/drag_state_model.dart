@@ -42,7 +42,8 @@ class DragStateModel extends ChangeNotifier {
   void updateStackHeightDiff(BuildContext context) {
     double newStackHeightDiff = stackHeightDiff =
         MediaQuery.of(context).size.height -
-            (panelKey.currentContext?.size?.height ?? 0);
+            (panelKey.currentContext?.size?.height ?? 0) -
+            MediaQuery.of(context).padding.top;
     if (stackHeightDiff != newStackHeightDiff) {
       stackHeightDiff = newStackHeightDiff;
       notifyListeners();
