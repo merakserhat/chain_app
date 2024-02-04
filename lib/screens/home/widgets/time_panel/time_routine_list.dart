@@ -22,7 +22,6 @@ class TimeRoutineList extends StatelessWidget {
                       child: DraggableRoutineCircle(
                         hourHeight: dragState.hourHeight,
                         routine: Program().routines[index],
-                        dragged: dragState.updateDraggableInfo,
                       ),
                     )),
           ),

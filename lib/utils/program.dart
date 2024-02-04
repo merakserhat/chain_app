@@ -22,6 +22,7 @@ class Program extends ChangeNotifier {
   }
 
   late List<RoutineModel> routines;
+
   void updateRoutines(Function function) {
     function();
     LocalService().saveRoutines(routines);
@@ -29,9 +30,13 @@ class Program extends ChangeNotifier {
   }
 
   late List<TemplateModel> templates;
+
   void updateTemplates(Function function) {
     function();
     LocalService().saveTemplates(templates);
     notifyListeners();
   }
+
+  double safeScreenSize = 0;
+  double topPadding = 0;
 }

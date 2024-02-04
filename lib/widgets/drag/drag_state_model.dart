@@ -40,10 +40,10 @@ class DragStateModel extends ChangeNotifier {
   double get hourHeight => (panelHeight / timerCount) * 2;
 
   void updateStackHeightDiff(BuildContext context) {
-    double newStackHeightDiff = stackHeightDiff =
-        MediaQuery.of(context).size.height -
-            (panelKey.currentContext?.size?.height ?? 0) -
-            MediaQuery.of(context).padding.top;
+    double newStackHeightDiff = Program().safeScreenSize -
+        (panelKey.currentContext?.size?.height ?? 0) +
+        Program().topPadding;
+
     if (stackHeightDiff != newStackHeightDiff) {
       stackHeightDiff = newStackHeightDiff;
       notifyListeners();
@@ -353,6 +353,7 @@ class DragStateModel extends ChangeNotifier {
     //TODO panel
   }
 
+  //////////////////////
   void createNewDraggableFromRoutines() {
     RoutineModel routine = draggingRoutine!.routineModel;
     DragModel<int> dragModel = DragModel(
@@ -361,7 +362,9 @@ class DragStateModel extends ChangeNotifier {
         y: draggingRoutine!.globalPos.dy -
             stackHeightDiff -
             TimePanel.panelFixedTabHeight +
-            draggingRoutine!.hourHeight / 2,
+            draggingRoutine!.hourHeight / 2 -
+            (hourHeight / 4) *
+                (draggingRoutine!.routineModel.duration.inMinutes / 30),
         isMoving: false,
         activityModel: ActivityModel(
             date: dailyModel.date,
@@ -383,20 +386,6 @@ class DragStateModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onDeleteDraggable(DragModel dragModel) {
-    dragModels.remove(dragModel);
-    checkOverlaps();
-    NotificationService().deleteActivityNotifications(dragModel.activityModel);
-    save();
-    notifyListeners();
-  }
-
-  void onActivityStatusChanged(DragModel dragModel, bool status) {
-    dragModel.activityModel.isDone = status;
-    save();
-    notifyListeners();
-  }
-
   updateDraggableInfo(DraggableRoutineInfo draggableInfo) {
     if (draggableInfo.dragging) {
       draggingRoutine = draggableInfo;
@@ -410,6 +399,20 @@ class DragStateModel extends ChangeNotifier {
       draggingRoutine = null;
       notifyListeners();
     }
+  }
+
+  void onDeleteDraggable(DragModel dragModel) {
+    dragModels.remove(dragModel);
+    checkOverlaps();
+    NotificationService().deleteActivityNotifications(dragModel.activityModel);
+    save();
+    notifyListeners();
+  }
+
+  void onActivityStatusChanged(DragModel dragModel, bool status) {
+    dragModel.activityModel.isDone = status;
+    save();
+    notifyListeners();
   }
 
   templateStatusChanged(bool status, {bool initialization = false}) {

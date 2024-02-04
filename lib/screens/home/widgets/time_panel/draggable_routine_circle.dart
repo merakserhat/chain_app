@@ -9,62 +9,60 @@ class DraggableRoutineCircle extends StatelessWidget {
     Key? key,
     required this.hourHeight,
     required this.routine,
-    required this.dragged,
   }) : super(key: key);
 
   final double hourHeight;
   final RoutineModel routine;
-  final Function(DraggableRoutineInfo) dragged;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTapDown: (info) {
-          dragged(DraggableRoutineInfo(
-            globalPos:
-                calculateCenterPos(info.globalPosition, info.localPosition),
+          Provider.of<DragStateModel>(context, listen: false)
+              .updateDraggableInfo(DraggableRoutineInfo(
+            globalPos: info.globalPosition,
             routineModel: routine,
             hourHeight: hourHeight,
           ));
         },
         onTapUp: (info) {
-          dragged(DraggableRoutineInfo(
-            globalPos:
-                calculateCenterPos(info.globalPosition, info.localPosition),
+          Provider.of<DragStateModel>(context, listen: false)
+              .updateDraggableInfo(DraggableRoutineInfo(
+            globalPos: info.globalPosition,
             routineModel: routine,
             hourHeight: hourHeight,
             dragging: false,
           ));
         },
         onVerticalDragUpdate: (info) {
-          dragged(DraggableRoutineInfo(
-            globalPos: calculateCenterPos(
-                info.globalPosition, Offset(hourHeight / 2, hourHeight / 2)),
+          Provider.of<DragStateModel>(context, listen: false)
+              .updateDraggableInfo(DraggableRoutineInfo(
+            globalPos: info.globalPosition,
             routineModel: routine,
             hourHeight: hourHeight,
           ));
         },
         onHorizontalDragUpdate: (info) {
-          dragged(DraggableRoutineInfo(
-            globalPos: calculateCenterPos(
-                info.globalPosition, Offset(hourHeight / 2, hourHeight / 2)),
+          Provider.of<DragStateModel>(context, listen: false)
+              .updateDraggableInfo(DraggableRoutineInfo(
+            globalPos: info.globalPosition,
             routineModel: routine,
             hourHeight: hourHeight,
           ));
         },
         onVerticalDragEnd: (info) {
-          dragged(DraggableRoutineInfo(
-            globalPos: calculateCenterPos(
-                info.velocity.pixelsPerSecond, info.velocity.pixelsPerSecond),
+          Provider.of<DragStateModel>(context, listen: false)
+              .updateDraggableInfo(DraggableRoutineInfo(
+            globalPos: const Offset(0, 0),
             routineModel: routine,
             hourHeight: hourHeight,
             dragging: false,
           ));
         },
         onHorizontalDragEnd: (info) {
-          dragged(DraggableRoutineInfo(
-            globalPos: calculateCenterPos(
-                info.velocity.pixelsPerSecond, info.velocity.pixelsPerSecond),
+          Provider.of<DragStateModel>(context, listen: false)
+              .updateDraggableInfo(DraggableRoutineInfo(
+            globalPos: const Offset(0, 0),
             routineModel: routine,
             hourHeight: hourHeight,
             dragging: false,
@@ -77,10 +75,6 @@ class DraggableRoutineCircle extends StatelessWidget {
             routine: routine,
           ),
         ));
-  }
-
-  Offset calculateCenterPos(Offset globalPos, Offset localPos) {
-    return Offset(globalPos.dx - localPos.dx, globalPos.dy - localPos.dy);
   }
 }
 

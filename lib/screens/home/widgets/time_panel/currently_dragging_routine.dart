@@ -13,9 +13,13 @@ class CurrentlyDraggingRoutine extends StatelessWidget {
               dragState.draggingRoutine!.dragging
           ? Positioned(
               top: dragState.draggingRoutine!.globalPos.dy -
-                  dragState.stackHeightDiff +
-                  44,
-              left: dragState.draggingRoutine!.globalPos.dx,
+                  dragState.stackHeightDiff -
+                  (dragState.hourHeight / 4) *
+                      (dragState.draggingRoutine!.routineModel.duration
+                              .inMinutes /
+                          30),
+              left: dragState.draggingRoutine!.globalPos.dx -
+                  dragState.hourHeight / 2,
               child: DragItemShape(
                 iconPath: dragState.draggingRoutine!.routineModel.iconPath,
                 isPartial:
