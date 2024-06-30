@@ -103,28 +103,30 @@ class TaskIcon extends StatelessWidget {
         onSelected(iconData);
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: othersButton
-              ? Colors.transparent
-              : selected
-                  ? selectedColor
-                  : AppColors.dark600,
-        ),
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.all(othersButton ? 12 : 8),
-            child: Image.asset(
-              iconData.src,
-              color: othersButton
-                  ? AppColors.dark400
-                  : panel
-                      ? selectedColor
-                      : Colors.white,
+      child: Center(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: othersButton
+                ? Colors.transparent
+                : selected
+                    ? selectedColor
+                    : AppColors.dark600,
+          ),
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.all(othersButton ? 12 : 8),
+              child: Image.asset(
+                iconData.src,
+                color: othersButton
+                    ? AppColors.dark400
+                    : panel
+                        ? selectedColor
+                        : Colors.white,
+              ),
             ),
           ),
         ),

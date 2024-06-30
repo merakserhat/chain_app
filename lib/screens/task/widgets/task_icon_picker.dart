@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chain_app/screens/task/widgets/task_icon.dart';
 import 'package:chain_app/widgets/custom_wrap.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +52,8 @@ class _TaskIconPickerState extends State<TaskIconPicker> {
                 ),
               )
             ],
-            cs: MediaQuery.of(context).size.width ~/ (TaskIcon.size + 8) - 1,
+            cs: min(7,
+                MediaQuery.of(context).size.width ~/ (TaskIcon.size + 8) - 1),
           )),
     );
   }
