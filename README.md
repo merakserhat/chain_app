@@ -18,10 +18,10 @@ Chain is a productivity application designed to help you plan your day by creati
 </div>
 ## Installation
 
-### Web
+## Web
 Access the web version of Chain [here](https://chain-af4e5.web.app/).
 
-### Mobile
+## Mobile
 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/chain.git
@@ -40,6 +40,11 @@ flutter pub get
 ```bash
 flutter run
 ```
+
+## Detected Bugs
+
+- Activity Store models are not aligning properly (Web).
+- When the icon is changed while creating an activity, the title also changes if it is already filled.
 
 ## Contact
 
